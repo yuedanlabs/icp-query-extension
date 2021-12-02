@@ -1,0 +1,22 @@
+{
+    "name": "Chrome Extension for Website ICP Query",
+    "description": "Chrome Extension for Website ICP Query",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["tabs"],
+    "action": {
+        "default_popup": "popup/index.html",
+        "default_icon": {
+            "16": "assets/app_lic_license_16.png",
+            "32": "assets/app_lic_license_32.png",
+            "48": "assets/app_lic_license_48.png",
+            "128": "assets/app_lic_license_128.png"
+        },
+        "default_title": "ICP Query"
+    },
+    "icons": {
+        "16": "assets/app_lic_license_16.png",
+        "48": "assets/app_lic_license_48.png",
+        "128": "assets/app_lic_license_128.png"
+    }
+}

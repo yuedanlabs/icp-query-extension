@@ -3,6 +3,7 @@
     "version": "0.0.1",
     "type": "module",
     "scripts": {
+        "publish": "vite build && cp -r dist icp-query-extension && zip -mr icp-query-extension.zip icp-query-extension",
         "dev": "vite",
         "build": "vite build",
         "serve": "vite preview"

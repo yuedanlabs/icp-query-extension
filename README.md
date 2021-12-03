@@ -75,6 +75,26 @@ Display the ICP info of current tab's domain, only when you click the extension 
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut.png" height="128" />
+  <br>
+  (1. Main Page)
+</p>
+<p align="center">
+  <!-- Set your project logo image here -->
+  <img src="./images/shortcut-02.png" height="128" />
+  <br>
+  (2. Main Page with no API)
+</p>
+<p align="center">
+  <!-- Set your project logo image here -->
+  <img src="./images/shortcut-03.png" height="128" />
+  <br>
+  (3. Options Page)
+</p>
+<p align="center">
+  <!-- Set your project logo image here -->
+  <img src="./images/shortcut-04.png" height="128" />
+  <br>
+  (4. Options Page)
 </p>
 
 <span id="nav-5"></span>
@@ -94,30 +114,29 @@ Display the ICP info of current tab's domain, only when you click the extension 
 ## Getting Started
 
 <!-- Write the detailed instructions for the project here, and tell users how to use your project. -->
-1. Clone this repository to your local machine.
-    ```bash
-    $ git clone https://github.com/yuedanlabs/icp-query-extension.git
-    ```
-2. Modified the `domain` or `API` to your own in `src/config.js`.
-    ```js
-    // src/config.js
-    export const API = "https://your-domain/release/icp";
-    ```
-3. Build the extension.
-    ```bash
-    $ cd icp-query-extension
-    $ npm install
-    $ npm run build
-    ```
-    then you can check the dist files in `dist` directory, and use it in Chrome.
-4. Install the extension.
-    - open `chrome://extensions/` in your Chrome browser.
-    - open the `Developer Mode` in the top right corner.
-    - click the `Load unpacked extension...` button.
-    - select the `icp-query-extension/dist` folder.
-    - click the `Load` button.
-    - Pin the extension to the `Toolbar`, if needed.
-5. Enjoy!
+- Build the extension from the [source code](https://github.com/yuedanlabs/icp-query-extension.git)
+  1. Clone this repository to your local machine.
+      ```bash
+      $ git clone https://github.com/yuedanlabs/icp-query-extension.git
+      ```
+  2. Build the extension.
+      ```bash
+      $ cd icp-query-extension
+      $ npm install
+      $ npm run build
+      ```
+      then you can check the dist files in `dist` directory, and use it in Chrome.
+  3. Install the extension.
+      - open `chrome://extensions/` in your Chrome browser.
+      - open the `Developer Mode` in the top right corner.
+      - click the `Load unpacked extension...` button.
+      - select the `icp-query-extension/dist` folder.
+      - click the `Load` button.
+      - Pin the extension to the `Toolbar`, if needed.
+      - Set the API URL in the `Options` page.
+  4. Enjoy!
+
+- Optional: you can download the release package directly to install it.
 
 <span id="nav-8"></span>
 

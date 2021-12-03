@@ -1,9 +1,10 @@
 {
-    "name": "Chrome Extension for Website ICP Query",
+    "name": "ICP Query Extension",
     "description": "Chrome Extension for Website ICP Query",
     "version": "1.0",
     "manifest_version": 3,
     "permissions": ["tabs"],
+    "options_page": "options/index.html",
     "action": {
         "default_popup": "popup/index.html",
         "default_icon": {

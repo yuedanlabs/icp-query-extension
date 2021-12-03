@@ -1,17 +1,25 @@
 <script lang="ts">
-    import { API } from "../config";
     let data: object;
-    $: chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        let domain = new URL(tabs[0].url).hostname;
-        fetch(`${API}?url=${domain}`)
-            .then(res => {
-                if (res.status == 200) {
-                    return res.json();
+
+    async function fetch_data(API: string, domain: string) {
+        let res = await fetch(`${API}?url=${domain}`);
+        if (res.status == 200) {
+            return res.json();
+        }
+    }
+
+    chrome.storage.sync.get("options", function (res) {
+        if (res.options && res.options.api_url != "") {
+            chrome.tabs.query(
+                { active: true, currentWindow: true },
+                async function (tabs) {
+                    let domain = new URL(tabs[0].url).hostname;
+                    data = await fetch_data(res.options.api_url, domain);
                 }
-            })
-            .then(res => {
-                data = res;
-            });
+            );
+        } else {
+            data = { msg: "请先配置API" };
+        }
     });
 </script>
 

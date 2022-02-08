@@ -10,10 +10,10 @@ export const DEMO_API_DATA = {
         "updateTime": "2021-08-30 13:10:24"
     },
     "website": {
-        "name": "百度",
+        // "name": "百度",
         "domain": "baidu.com",
-        "homepage": "www.baidu.com",
-        "ip": "192.168.0.1",
+        // "homepage": "www.baidu.com",
+        // "ip": "192.168.0.1",
         "license": "京ICP证030173号-1"
     }
 }

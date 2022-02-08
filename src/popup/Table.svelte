@@ -29,10 +29,10 @@
     {:else}
         <table>
             <tbody>
-                <tr>
+                <!-- <tr>
                     <td class="head">备案名称</td>
                     <td class="text">{data.website.name}</td>
-                </tr>
+                </tr> -->
                 <tr>
                     <td class="head">备案类型</td>
                     <td class="text">{data.subject.nature}</td>

@@ -3,8 +3,14 @@
     "description": "Chrome Extension for Website ICP Query",
     "version": "1.0",
     "manifest_version": 3,
-    "permissions": ["tabs"],
+    "permissions": [
+        "tabs",
+        "storage"
+    ],
     "options_page": "options/index.html",
+    "background": {
+        "service_worker": "background.js"
+    },
     "action": {
         "default_popup": "popup/index.html",
         "default_icon": {

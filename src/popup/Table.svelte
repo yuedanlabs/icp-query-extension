@@ -2,8 +2,10 @@
     let data: object;
 
     async function fetch_data(API: string, domain: string) {
-        let res = await fetch(`${API}?url=${domain}`);
-        if (res.status == 200) {
+        const url = new URL(API)
+        url.searchParams.append("url", domain)
+        const res = await fetch(url);
+        if (res.ok) {
             return res.json();
         }
     }
@@ -14,7 +16,8 @@
                 { active: true, currentWindow: true },
                 async function (tabs) {
                     let domain = new URL(tabs[0].url).hostname;
-                    data = await fetch_data(res.options.api_url, domain);
+                    const result = await fetch_data(res.options.api_url, domain);
+                    data = Array.isArray(result) ? result[0] : result
                 }
             );
         } else {
@@ -44,6 +47,10 @@
                 <tr>
                     <td class="head">备案号</td>
                     <td class="text">{data.subject.license}</td>
+                </tr>
+                <tr>
+                    <td class="head">备案日期</td>
+                    <td class="text">{(new Date(data.subject.updateTime)).toLocaleDateString()}</td>
                 </tr>
             </tbody>
         </table>

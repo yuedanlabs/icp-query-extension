@@ -195,21 +195,20 @@ Display the ICP info of current tab's domain, only when you click the extension 
 - API Response Data
 
   ```json
-  {
+  [
+    {
       "subject": {
-          "name": "北京百度网讯科技有限公司",
-          "nature": "企业",
-          "license": "京ICP证030173号",
-          "updateTime": "2021-08-30 13:10:24"
+        "name": "北京百度网讯科技有限公司",
+        "nature": "企业",
+        "license": "京ICP证030173号",
+        "updateTime": "2022-10-11 09:27:57"
       },
       "website": {
-          "name": "百度",
-          "domain": "baidu.com",
-          "homepage": "www.baidu.com",
-          "ip": "192.168.0.1",
-          "license": "京ICP证030173号-1"
+        "domain": "baidu.com",
+        "license": "京ICP证030173号-1"
       }
-  }
+    }
+  ]
   ```
 
 ## License

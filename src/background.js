@@ -1,5 +1,5 @@
 const default_options = {
-    api_url: "https://icp-query.ss-work.workers.dev/icp",
+    api_url: "https://wrrh68.lafyun.com/icp?token=637e79b77fd9b2915dfb7e6c",  // API with a trial token
 };
 
 chrome.runtime.onInstalled.addListener((res) => {

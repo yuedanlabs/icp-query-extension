@@ -1,7 +1,7 @@
 {
     "name": "ICP Query Extension",
     "description": "Chrome Extension for Website ICP Query",
-    "version": "1.0",
+    "version": "1.0.1",
     "manifest_version": 3,
     "permissions": [
         "tabs",

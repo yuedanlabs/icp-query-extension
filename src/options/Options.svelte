@@ -1,6 +1,7 @@
 <script lang="ts">
     let options = {
         api_url: "",
+        show_feedback: true,
     };
     let status_text = "";
     let validation = "";
@@ -62,6 +63,12 @@
                     >{options.api_url}</span
                 ></td
             >
+        </tr>
+        <tr>
+            <td class="table head">show feedback:</td>
+            <td class="table">
+                <input type="checkbox" name="showFeedback" id="showFeedback" bind:checked={options.show_feedback}>
+            </td>
         </tr>
     </table>
 

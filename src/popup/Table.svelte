@@ -6,7 +6,7 @@
         const url = new URL(API)
         url.searchParams.append("url", domain)
         const res = await fetch(url);
-        if (res.ok) {
+        if (res.ok || res.status === 429) {
             return res.json();
         }
     }

@@ -53,6 +53,8 @@ Browser Extension for ICP Query
 <!-- Fill in the detailed introduction about your project here -->
 Browser Extension for ICP Query, Chrome is supported for now.
 
+> 👏 Now we can install the app in the chrome webstore: 👉 [ICP Query Extension](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa)
+
 <span id="nav-3-1"></span>
 
 <!-- ### Official Website -->

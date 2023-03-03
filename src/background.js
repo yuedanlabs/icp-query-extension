@@ -15,3 +15,12 @@ chrome.runtime.onInstalled.addListener((res) => {
         });
     }
 });
+
+import { AllICPSuffix } from "./icp-suffix";
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status !== "complete") return
+    const { hostname } = new URL(tab.url)
+    if (!AllICPSuffix.find(e => hostname.endsWith(e))) {
+        chrome.action.setIcon({path: "assets/icon_grey.png", tabId})
+    }
+})

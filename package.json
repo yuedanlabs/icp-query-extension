@@ -1,19 +1,33 @@
 {
-    "name": "svelte",
-    "version": "0.0.1",
-    "type": "module",
-    "scripts": {
-        "publish": "vite build && cp -r dist icp-query-extension && zip -mr icp-query-extension.zip icp-query-extension",
-        "dev": "vite",
-        "build": "vite build",
-        "serve": "vite preview"
-    },
-    "devDependencies": {
-        "@sveltejs/vite-plugin-svelte": "^1.0.0-next.7",
-        "svelte": "^3.37.0",
-        "svelte-preprocess": "^4.7.2",
-        "typescript": "^4.2.4",
-        "vite": "^2.2.3",
-        "vite-plugin-chrome-extension": "0.0.7"
-    }
+  "name": "icp-query-extension",
+  "displayName": "ICP Query Extension",
+  "version": "1.0.1",
+  "description": "Browser Extension for ICP Query",
+  "author": "yuedanlabs",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "plasmo build",
+    "package": "plasmo package"
+  },
+  "dependencies": {
+    "plasmo": "0.67.4",
+    "svelte": "3.58.0",
+    "svelte-preprocess": "5.0.3"
+  },
+  "devDependencies": {
+    "@plasmohq/prettier-plugin-sort-imports": "3.6.3",
+    "@types/chrome": "0.0.227",
+    "@types/node": "18.15.11",
+    "prettier": "2.8.7",
+    "typescript": "5.0.3"
+  },
+  "manifest": {
+    "permissions": [
+      "tabs",
+      "storage"
+    ],
+    "host_permissions": [
+      "https://*/*"
+    ]
+  }
 }

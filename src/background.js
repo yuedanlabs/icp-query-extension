@@ -1,26 +1,23 @@
-const default_options = {
-    api_url: "https://wrrh68.lafyun.com/icp?token=637e79b77fd9b2915dfb7e6c",  // API with a trial token
-};
+import { DEFAULT_OPTIONS } from "./default-data";
 
 chrome.runtime.onInstalled.addListener((res) => {
     // https://developer.chrome.com/docs/extensions/reference/tabs/#opening-an-extension-page-in-a-new-tab
     if (res.reason === chrome.runtime.OnInstalledReason.INSTALL) {
         chrome.storage.sync.set(
             {
-                options: default_options,
+                options: DEFAULT_OPTIONS,
             },
         );
-        chrome.tabs.create({
-            url: "options/index.html",
-        });
+        chrome.runtime.openOptionsPage()
     }
 });
 
 import { AllICPSuffix } from "./icp-suffix";
+import icon_grey from "url:~assets/icon_grey.png"
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status !== "complete") return
     const { hostname } = new URL(tab.url)
     if (!AllICPSuffix.find(e => hostname.endsWith(e))) {
-        chrome.action.setIcon({path: "assets/icon_grey.png", tabId})
+        chrome.action.setIcon({path: icon_grey, tabId})
     }
 })

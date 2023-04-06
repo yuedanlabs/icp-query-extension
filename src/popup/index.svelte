@@ -1,6 +1,6 @@
 <script lang="ts">
-    import logo from "../assets/favicon.png";
-    import Table from "./Table.svelte";
+    import logo from "data-base64:~assets/favicon.png";
+    import Table from "./table.svelte";
 </script>
 
 <main>
@@ -19,6 +19,7 @@
     }
 
     main {
+        min-width: 220px;
         text-align: center;
         padding: .5rem;
         margin: 0 auto;

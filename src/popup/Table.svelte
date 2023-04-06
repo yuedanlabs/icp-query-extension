@@ -1,5 +1,7 @@
 <script lang="ts">
-    let data: object;
+    import type { Data } from "~types"
+    import Loader from "./loader.svelte";
+    let data: Data;
     let showFeedback: boolean;
 
     async function fetch_data(API: string, domain: string) {
@@ -66,7 +68,8 @@
         </div>
     {/if}
 {:else}
-    <p>...waiting</p>
+    <Loader />
+    <p>...waiting...</p>
 {/if}
 
 <style>
@@ -76,7 +79,7 @@
 
     .head {
         display: inline-block;
-        width: 3rem;
+        width: 3.5rem;
         text-align: justify;
         text-align-last: justify;
     }

@@ -1,5 +1,7 @@
 <script lang="ts">
-    let options = {
+    import type { Options } from "~types"
+
+    let options: Options = {
         api_url: "",
         show_feedback: true,
     };
@@ -74,7 +76,7 @@
 
     <br />
     <div id="status" class="status">{status_text}</div>
-    <button id="save" on:click={save_options}>Save</button>
+    <button class="btn btn-sm" id="save" on:click={save_options}>Save</button>
 </div>
 
 <style>

@@ -124,15 +124,15 @@ Display the ICP info of current tab's domain, only when you click the extension 
   2. Build the extension.
       ```bash
       $ cd icp-query-extension
-      $ npm install
-      $ npm run build
+      $ pnpm install
+      $ pnpm run build
       ```
-      then you can check the dist files in `dist` directory, and use it in Chrome.
+      then you can check the dist files in `build/chrome-mv3-prod` directory, and use it in Chrome.
   3. Install the extension.
       - open `chrome://extensions/` in your Chrome browser.
       - open the `Developer Mode` in the top right corner.
       - click the `Load unpacked extension...` button.
-      - select the `icp-query-extension/dist` folder.
+      - select the `icp-query-extension/build/chrome-mv3-prod` folder.
       - click the `Load` button.
       - Pin the extension to the `Toolbar`, if needed.
       - Set the API URL in the `Options` page.

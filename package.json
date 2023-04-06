@@ -1,7 +1,7 @@
 {
   "name": "icp-query-extension",
   "displayName": "ICP Query Extension",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Browser Extension for ICP Query",
   "author": "yuedanlabs",
   "scripts": {
@@ -25,9 +25,6 @@
     "permissions": [
       "tabs",
       "storage"
-    ],
-    "host_permissions": [
-      "https://*/*"
     ]
   }
 }

@@ -1,6 +1,6 @@
 <p align="center">
   <!-- Set your project logo image here -->
-  <img src="./src/assets/app_lic_license_128.png" height="128" />
+  <img src="./assets/icon.png" height="128" />
 </p>
 <p align="center">
 <!-- Fill in your project slogan here, preferably a short sentence. -->
@@ -212,6 +212,10 @@ Display the ICP info of current tab's domain, only when you click the extension 
     }
   ]
   ```
+
+## TODO
+
+- [ ] whois
 
 ## License
 

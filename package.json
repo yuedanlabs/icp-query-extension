@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "plasmo": "0.67.4",
+    "stdf": "^0.0.2",
     "svelte": "3.58.0",
     "svelte-preprocess": "5.0.3"
   },
@@ -18,13 +19,26 @@
     "@plasmohq/prettier-plugin-sort-imports": "3.6.3",
     "@types/chrome": "0.0.227",
     "@types/node": "18.15.11",
+    "autoprefixer": "^10.4.14",
+    "postcss": "^8.4.23",
     "prettier": "2.8.7",
+    "tailwindcss": "^3.3.2",
     "typescript": "5.0.3"
   },
   "manifest": {
     "permissions": [
       "tabs",
       "storage"
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/fonts/symbol.svg"
+        ],
+        "matches": [
+          "https://*/*"
+        ]
+      }
     ]
   }
 }

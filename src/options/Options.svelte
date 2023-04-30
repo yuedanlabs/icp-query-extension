@@ -4,6 +4,7 @@
     let options: Options = {
         api_url: "",
         show_feedback: true,
+        show_whois: true,
     };
     let status_text = "";
     let validation = "";
@@ -70,6 +71,12 @@
             <td class="table head">show feedback:</td>
             <td class="table">
                 <input type="checkbox" name="showFeedback" id="showFeedback" bind:checked={options.show_feedback}>
+            </td>
+        </tr>
+        <tr>
+            <td class="table head">show whois:</td>
+            <td class="table">
+                <input type="checkbox" name="showWhois" id="showWhois" bind:checked={options.show_whois}>
             </td>
         </tr>
     </table>

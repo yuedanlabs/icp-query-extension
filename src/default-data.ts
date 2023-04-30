@@ -15,5 +15,6 @@ export const DEFAULT_DEMO_DATA: Data = {
 
 export const DEFAULT_OPTIONS: Options = {
   api_url: process.env.PLASMO_PUBLIC_API_URL,
-  show_feedback: true
+  show_feedback: true,
+  show_whois: true
 }

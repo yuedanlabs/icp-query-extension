@@ -76,6 +76,12 @@ Display the ICP info of current tab's domain, only when you click the extension 
 
 <p align="center">
   <!-- Set your project logo image here -->
+  <img src="./images/shortcut-05.jpg" height="128" />
+  <br>
+  (0. Main Page)
+</p>
+<p align="center">
+  <!-- Set your project logo image here -->
   <img src="./images/shortcut.png" height="128" />
   <br>
   (1. Main Page)
@@ -94,7 +100,7 @@ Display the ICP info of current tab's domain, only when you click the extension 
 </p>
 <p align="center">
   <!-- Set your project logo image here -->
-  <img src="./images/shortcut-04.png" height="128" />
+  <img src="./images/shortcut-06.png" height="128" />
   <br>
   (4. Options Page)
 </p>
@@ -215,7 +221,9 @@ Display the ICP info of current tab's domain, only when you click the extension 
 
 ## TODO
 
-- [ ] whois
+- [x] whois
+- [ ] DNS
+- [ ] GongAn Record
 
 ## License
 

@@ -2,6 +2,7 @@
     import type { Data } from "~types"
     import Loader from "./loader.svelte";
     import { Divider, NoticeBar, Icon } from 'stdf';
+    import Warn from "./warn.svelte"
     let data: Data;
     let showFeedback: boolean;
     let showWhois: boolean;
@@ -143,6 +144,10 @@
                 <Icon name='ri-close-line' size="16" />
             </button>
         </div>
+    {/if}
+
+    {#if data && data.warn}
+        <Warn warn={data.warn} />
     {/if}
 {:else}
     <Loader />

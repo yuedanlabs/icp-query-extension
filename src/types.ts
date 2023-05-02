@@ -1,4 +1,5 @@
 export interface Data {
+  warn?: string
   msg?: string
   subject?: {
     name: string

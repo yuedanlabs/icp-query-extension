@@ -1,7 +1,10 @@
 <script lang="ts">
   import logo from "data-base64:~assets/favicon.png"
 
-  import Options from "./options.svelte"
+  import { Divider } from 'stdf';
+
+  import Options from "./Options.svelte"
+  import "~style.css"
 </script>
 
 <main>
@@ -13,18 +16,19 @@
   <Options />
 
   <div class="contact" style="margin-top: 10rem;">
-    <p style="color: red;font-size: large;">Notice:</p>
+    <Divider px="8" line="dashed" text="Notice" injClass="border-[#FF5722] text-[red]" />
     <p style="color: red;">
-      The default API uses a trial token, which is only used for testing and
-      when the usual usage is not large.
+      The default API uses a trial token, just for testing.
     </p>
     <p style="color: red;">
-      For a good experience, please click the link below to send an email to
-      apply for your exclusive token.
+      For a better experience, please send us an email to apply for your exclusive token.
     </p>
-    <a
-      href="mailto:yuedan.work@gmail.com?subject=Apply%20Token%20for%20ICP%20Query%20Extension&body=Please%20include%20your%20email%20address%20here.%0A%0AEmail%3A%20%3Cyour%20email%20address%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))"
-      style="font-size: medium;">Send mail to apply for your own token</a>
+    <div class="mt-8">
+      <a
+        class="border rounded-md bg-success px-6 py-3 text-white"
+        href="mailto:yuedan.work@gmail.com?subject=Apply%20Token%20for%20ICP%20Query%20Extension&body=Please%20include%20your%20email%20address%20here.%0A%0AEmail%3A%20%3Cyour%20email%20address%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))"
+        style="font-size: medium;">Click to Apply</a>
+    </div>
   </div>
 </main>
 

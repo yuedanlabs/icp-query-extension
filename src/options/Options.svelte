@@ -1,12 +1,13 @@
 <script lang="ts">
     import type { Options } from "~types"
+    import { Button, Toast, Switch } from 'stdf';
 
     let options: Options = {
         api_url: "",
         show_feedback: true,
         show_whois: true,
     };
-    let status_text = "";
+    let show_status = false;
     let validation = "";
 
     function save_options() {
@@ -28,10 +29,7 @@
             },
             function () {
                 // Update status to let user know options were saved.
-                status_text = "Options saved.";
-                setTimeout(function () {
-                    status_text = "";
-                }, 750);
+                show_status = true;
             }
         );
     }
@@ -43,69 +41,37 @@
     });
 </script>
 
-<div>
-    <table>
-        <tr>
-            <td class="table head">ICP API URL:</td>
-            <td class="table"
-                ><textarea
-                    id="icp_api_url"
-                    name="icp_api_url"
-                    rows="3"
-                    cols="33"
-                    bind:value={options.api_url}
-                    placeholder="Input Your ICP API URL Here"
-                /></td
-            >
-            <td class="table" style="color: red;">{validation}</td>
-        </tr>
-        <tr>
-            <td class="table head">Set API To:</td>
-            <td class="table"
-                ><span id="icp_api_url_result" style="color: red;"
-                    >{options.api_url}</span
-                ></td
-            >
-        </tr>
-        <tr>
-            <td class="table head">show feedback:</td>
-            <td class="table">
-                <input type="checkbox" name="showFeedback" id="showFeedback" bind:checked={options.show_feedback}>
-            </td>
-        </tr>
-        <tr>
-            <td class="table head">show whois:</td>
-            <td class="table">
-                <input type="checkbox" name="showWhois" id="showWhois" bind:checked={options.show_whois}>
-            </td>
-        </tr>
-    </table>
+<div class="container max-w-xl mx-auto">
+    <label class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
+        <span class="font-medium">ICP API URL</span>
+        <div class="w-3/4 space-y-2">
+            <input type="text" class="form-input text-xs w-full" bind:value={options.api_url} placeholder="Input Your ICP API URL Here">
+            <p class="text-red-400 text-start">{validation}</p>
+        </div>
+    </label>
 
-    <br />
-    <div id="status" class="status">{status_text}</div>
-    <button class="btn btn-sm" id="save" on:click={save_options}>Save</button>
+    <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
+        <span class="font-medium">Show Feedback</span>
+        <Switch bind:check={options.show_feedback} injClass="bg-success dark:bg-success" />
+    </div>
+
+    <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
+        <span class="font-medium">Show Whois</span>
+        <Switch bind:check={options.show_whois} injClass="bg-success dark:bg-success" />
+    </div>
+
+    <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
+        <span class="font-medium">Show DNS</span>
+        <span class="text-success text-start">coming soon...</span>
+        <Switch disabled />
+    </div>
+
+    <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
+        <span class="font-medium">Show GongAn Record</span>
+        <span class="text-success text-start">coming soon...</span>
+        <Switch disabled />
+    </div>
+
+    <Toast bind:visible={show_status} message="Options saved" position="top" py="40" />
+    <Button state="success" size="sm" on:click={save_options}>Save</Button>
 </div>
-
-<style>
-    table {
-        margin: auto;
-        margin-top: 2rem;
-    }
-
-    .table {
-        margin: 1rem;
-    }
-
-    .head {
-        display: inline-block;
-        width: 5rem;
-        text-align: justify;
-        text-align-last: justify;
-    }
-
-    .status {
-        color: red;
-        font-size: medium;
-        margin: 2rem;
-    }
-</style>

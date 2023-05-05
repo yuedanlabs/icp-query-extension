@@ -17,7 +17,7 @@ export interface Data {
     "Created Date": string
     "Updated Date"?: string
     "Expiry Date": string
-    "Registrar": string
+    Registrar: string
     "Registrant Organization"?: string
     "Registrant Country"?: string
   }

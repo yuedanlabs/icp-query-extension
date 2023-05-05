@@ -6,6 +6,7 @@
         api_url: "",
         show_feedback: true,
         show_whois: true,
+        show_dns: true,
     };
     let show_status = false;
     let validation = "";
@@ -62,8 +63,7 @@
 
     <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
         <span class="font-medium">Show DNS</span>
-        <span class="text-success text-start">coming soon...</span>
-        <Switch disabled />
+        <Switch bind:check={options.show_dns} injClass="bg-success dark:bg-success" />
     </div>
 
     <div class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">

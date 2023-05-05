@@ -6,6 +6,7 @@
     let data: Data;
     let showFeedback: boolean;
     let showWhois: boolean;
+    let showDNS: boolean;
     let showNotice = true;
 
     async function fetch_data(API: string, domain: string) {
@@ -13,6 +14,9 @@
         url.searchParams.append("url", domain)
         if (showWhois) {
             url.searchParams.append("whois", "1")
+        }
+        if (showDNS) {
+            url.searchParams.append("dns", "1")
         }
         const res = await fetch(url);
         if (res.ok || res.status === 429) {
@@ -24,6 +28,7 @@
         if (res.options && res.options.api_url != "") {
             showFeedback = 'show_feedback' in res.options ? res.options.show_feedback : true
             showWhois = 'show_whois' in res.options ? res.options.show_whois : true
+            showDNS = 'show_dns' in res.options ? res.options.show_dns: true
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 async function (tabs) {
@@ -129,6 +134,57 @@
                     <tr>
                         <td class="head">注册属地</td>
                         <td class="text">{data.whois["Registrant Country"] || "-"}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {/if}
+
+        {#if showDNS && data.dns}
+            <Divider text="DNS" />
+            <table class="min-w-[260px]">
+                <tbody>
+                    <tr>
+                        <td class="head">A</td>
+                        <td class="text">
+                            {#if data.dns.A.length === 0}
+                                <span>-</span>
+                            {/if}
+                            {#each data.dns.A as item, i}
+                                <li>{item}</li>
+                            {/each}</td>
+                    </tr>
+                    <tr>
+                        <td class="head">AAAA</td>
+                        <td class="text">
+                            {#if data.dns.AAAA.length === 0}
+                                <span>-</span>
+                            {/if}
+                            {#each data.dns.AAAA as item, i}
+                                <li>{item}</li>
+                            {/each}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head">CNAME</td>
+                        <td class="text">
+                            {#if data.dns.CNAME.length === 0}
+                                <span>-</span>
+                            {/if}
+                            {#each data.dns.CNAME as item, i}
+                                <li>{item}</li>
+                            {/each}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="head">DNS 服务器</td>
+                        <td class="text">
+                            {#if data.dns.NS.length === 0}
+                                <span>-</span>
+                            {/if}
+                            {#each data.dns.NS as item, i}
+                                <li>{item}</li>
+                            {/each}
+                        </td>
                     </tr>
                 </tbody>
             </table>

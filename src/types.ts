@@ -21,10 +21,17 @@ export interface Data {
     "Registrant Organization"?: string
     "Registrant Country"?: string
   }
+  dns?: {
+    A: string[]
+    AAAA: string[]
+    CNAME: string[]
+    NS: string[]
+  }
 }
 
 export interface Options {
   api_url?: string
   show_feedback?: boolean
   show_whois?: boolean
+  show_dns?: boolean
 }

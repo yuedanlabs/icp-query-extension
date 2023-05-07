@@ -26,6 +26,10 @@ export interface Data {
     AAAA: string[]
     CNAME: string[]
     NS: string[]
+    GEO: {
+      isp?: string
+      area?: string
+    }
   }
 }
 

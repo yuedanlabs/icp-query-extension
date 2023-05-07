@@ -186,6 +186,20 @@
                             {/each}
                         </td>
                     </tr>
+                    {#if data.dns.GEO}
+                        <tr>
+                            <td class="head">地理位置</td>
+                            <td class="text">
+                                {data.dns.GEO.area || '-'}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="head">运营商</td>
+                            <td class="text">
+                                {data.dns.GEO.isp || '-'}
+                            </td>
+                        </tr>
+                    {/if}
                 </tbody>
             </table>
         {/if}

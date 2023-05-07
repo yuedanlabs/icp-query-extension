@@ -1,7 +1,7 @@
 {
   "name": "icp-query-extension",
   "displayName": "ICP Query Extension",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Browser Extension for ICP Query",
   "author": "yuedanlabs",
   "scripts": {

@@ -1,15 +1,18 @@
 export interface Data {
   warn?: string
   msg?: string
-  subject?: {
-    name: string
-    nature: string
-    license: string
-    updateTime: string
-  }
-  website?: {
-    domain: string
-    license: string
+  icp?: {
+    msg?: string
+    subject?: {
+      name: string
+      nature: string
+      license: string
+      updateTime: string
+    }
+    website?: {
+      domain: string
+      license: string
+    }
   }
   whois?: {
     "Domain Status": string[]
@@ -38,4 +41,5 @@ export interface Options {
   show_feedback?: boolean
   show_whois?: boolean
   show_dns?: boolean
+  show_icp?: boolean
 }

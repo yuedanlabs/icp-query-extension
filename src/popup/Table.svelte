@@ -7,16 +7,21 @@
     let showFeedback: boolean;
     let showWhois: boolean;
     let showDNS: boolean;
+    let showICP: boolean;
     let showNotice = true;
 
     async function fetch_data(API: string, domain: string) {
         const url = new URL(API)
         url.searchParams.append("url", domain)
+        url.searchParams.append("version", "2")
         if (showWhois) {
             url.searchParams.append("whois", "1")
         }
         if (showDNS) {
             url.searchParams.append("dns", "1")
+        }
+        if (showICP) {
+            url.searchParams.append("icp", "1")
         }
         const res = await fetch(url);
         if (res.ok || res.status === 429) {
@@ -29,6 +34,7 @@
             showFeedback = 'show_feedback' in res.options ? res.options.show_feedback : true
             showWhois = 'show_whois' in res.options ? res.options.show_whois : true
             showDNS = 'show_dns' in res.options ? res.options.show_dns: true
+            showICP = 'show_icp' in res.options ? res.options.show_icp: true
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 async function (tabs) {
@@ -65,32 +71,39 @@
 {#if data}
     {#if data.msg}
         <p>{data.msg}</p>
-    {:else}
+    {/if}
+
+    {#if showICP && data.icp}
         <Divider text="ICP" />
-        <table class="min-w-[260px]">
-            <tbody>
-                <!-- <tr>
-                    <td class="head">备案名称</td>
-                    <td class="text">{data.website.name}</td>
-                </tr> -->
-                <tr>
-                    <td class="head">备案类型</td>
-                    <td class="text">{data.subject.nature}</td>
-                </tr>
-                <tr>
-                    <td class="head">主办方</td>
-                    <td class="text">{data.subject.name}</td>
-                </tr>
-                <tr>
-                    <td class="head">备案号</td>
-                    <td class="text">{data.subject.license}</td>
-                </tr>
-                <tr>
-                    <td class="head">备案日期</td>
-                    <td class="text">{(new Date(data.subject.updateTime)).toLocaleDateString()}</td>
-                </tr>
-            </tbody>
-        </table>
+        {#if data.icp.subject && data.icp.website}
+            <table class="min-w-[260px]">
+                <tbody>
+                    <!-- <tr>
+                        <td class="head">备案名称</td>
+                        <td class="text">{data.website.name}</td>
+                    </tr> -->
+                    <tr>
+                        <td class="head">备案类型</td>
+                        <td class="text">{data.icp.subject.nature}</td>
+                    </tr>
+                    <tr>
+                        <td class="head">主办方</td>
+                        <td class="text">{data.icp.subject.name}</td>
+                    </tr>
+                    <tr>
+                        <td class="head">备案号</td>
+                        <td class="text">{data.icp.subject.license}</td>
+                    </tr>
+                    <tr>
+                        <td class="head">备案日期</td>
+                        <td class="text">{(new Date(data.icp.subject.updateTime)).toLocaleDateString()}</td>
+                    </tr>
+                </tbody>
+            </table>
+        {:else}
+            <p>{data.icp.msg}</p>
+        {/if}
+    {/if}
 
         {#if showWhois && data.whois}
             <Divider text="WHOIS" />
@@ -203,7 +216,6 @@
                 </tbody>
             </table>
         {/if}
-    {/if}
 
     {#if showFeedback}
         <Divider text="FEEDBACK" />

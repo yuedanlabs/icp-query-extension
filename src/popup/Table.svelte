@@ -65,7 +65,7 @@
 </script>
 
 {#if showNotice}
-    <NoticeBar leftIcon="slot" fontSize="xs" injClass="text-success bg-success/10 mt-2" textList={['本次更新了一些重要功能，可以查看当前网站域名的 whois 信息，默认启用，如不需要，可前往配置（选项）页面关闭']} on:clickright={close_notice}>🥳</NoticeBar>
+    <NoticeBar leftIcon="slot" fontSize="xs" injClass="text-success bg-success/10 mt-2" textList={['本次更新，默认显示当前网站域名的 ICP 信息，如不需要，可前往配置（选项）页面关闭']} on:clickright={close_notice}>🥳</NoticeBar>
 {/if}
 
 {#if data}

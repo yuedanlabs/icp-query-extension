@@ -317,6 +317,7 @@ Display the ICP info of current tab's domain, only when you click the extension 
 - [x] DNS
 - [ ] GongAn Record
 - [x] GEO & ISP
+- [ ] Other domains under the same subject
 
 ## License
 

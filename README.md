@@ -4,7 +4,7 @@
 </p>
 <p align="center">
 <!-- Fill in your project slogan here, preferably a short sentence. -->
-Browser Extension for ICP Query
+Browser Extension for ICP、DNS、Whois & GEO Query
 </p>
 <p align="center">
 <a href="https://github.com/yuedanlabs/icp-query-extension/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/yuedanlabs/icp-query-extension?style=flat-square"/></a>
@@ -16,7 +16,7 @@ Browser Extension for ICP Query
 
 <!-- Here is the multilingual list -->
 
-<!-- [English](README.md) | [简体中文](README.zh-Hans.md) -->
+[English](README.md) | [简体中文](README.zh-Hans.md)
 
 <span id="nav-2"></span>
 
@@ -51,9 +51,13 @@ Browser Extension for ICP Query
 ## Introductions
 
 <!-- Fill in the detailed introduction about your project here -->
-Browser Extension for ICP Query, Chrome is supported for now.
+ICP Query Extension is an open source browser extension for:
+  - ICP query
+  - DNS query
+  - Whois query
+  - Server location and ISP lookup
 
-> 👏 Now we can install the app in the chrome webstore: 👉 [ICP Query Extension](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa)
+<!-- > 👏 Now we can install the app in the chrome webstore: 👉 [ICP Query Extension](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa) -->
 
 <span id="nav-3-1"></span>
 
@@ -68,6 +72,12 @@ Browser Extension for ICP Query, Chrome is supported for now.
 <!-- Fill in the project creation background here -->
 
 <span id="nav-4"></span>
+
+## Install
+
+1. [Chrome Web Store](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa): Install directly from the Chrome Web Store. **Recommend 👈**
+2. [Source Releases](https://github.com/yuedanlabs/icp-query-extension/releases): Download the zip release package for manual installation.
+3. Build from source as follows
 
 ## Graphic Demo
 
@@ -144,8 +154,6 @@ Display the ICP info of current tab's domain, only when you click the extension 
       - Set the API URL in the `Options` page.
   4. Enjoy!
 
-- Optional: you can download the release package directly to install it.
-
 <span id="nav-8"></span>
 
 <!-- ## Maintainer -->
@@ -191,6 +199,8 @@ Display the ICP info of current tab's domain, only when you click the extension 
 <span id="nav-15"></span>
 
 ## About the API
+
+The API is separate and extensible. Any API that conforms to the following data structure can be applied to this extension:
 
 - API URL
 
@@ -318,6 +328,7 @@ Display the ICP info of current tab's domain, only when you click the extension 
 - [ ] GongAn Record
 - [x] GEO & ISP
 - [ ] Other domains under the same subject
+- [ ] Options API and custom API
 
 ## License
 

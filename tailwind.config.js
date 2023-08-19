@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./src/**/*.{html,js,svelte,ts}",
-    "./node_modules/stdf/src/**/*.svelte"
+    "./node_modules/stdf/dist/**/*.svelte"
   ],
   theme: {
     extend: {

@@ -88,7 +88,11 @@
                     </tr>
                     <tr>
                         <td class="head">主办方</td>
-                        <td class="text">{data.icp.subject.name}</td>
+                        {#if data.icp.subject.nature === "企业"}
+                            <td class="text"><a class="underline decoration-1 hover:decoration-2 underline-offset-4 hover:text-success" href="https://www.tianyancha.com/search?key={data.icp.subject.name}" target="_blank" rel="noopener noreferrer">{data.icp.subject.name}<svg class="icon mx-[2px] inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill="currentColor" d="M137.54 186.36a8 8 0 0 1 0 11.31l-9.94 10a56 56 0 0 1-79.22-79.27l24.12-24.12a56 56 0 0 1 76.81-2.28a8 8 0 1 1-10.64 12a40 40 0 0 0-54.85 1.63L59.7 139.72a40 40 0 0 0 56.58 56.58l9.94-9.94a8 8 0 0 1 11.32 0Zm70.08-138a56.08 56.08 0 0 0-79.22 0l-9.94 9.95a8 8 0 0 0 11.32 11.31l9.94-9.94a40 40 0 0 1 56.58 56.58l-24.12 24.14a40 40 0 0 1-54.85 1.6a8 8 0 1 0-10.64 12a56 56 0 0 0 76.81-2.26l24.12-24.12a56.08 56.08 0 0 0 0-79.24Z"/></svg></a></td>
+                        {:else}
+                            <td class="text">{data.icp.subject.name}</td>
+                        {/if}
                     </tr>
                     <tr>
                         <td class="head">备案号</td>

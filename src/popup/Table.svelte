@@ -3,6 +3,7 @@
     import Loader from "./loader.svelte";
     import { Divider, NoticeBar, Icon } from 'stdf';
     import Warn from "./warn.svelte"
+    import { DEFAULT_DEMO_DATA } from "~default-data";
     let data: Data;
     let showFeedback: boolean;
     let showWhois: boolean;
@@ -11,6 +12,7 @@
     let showNotice = true;
 
     async function fetch_data(API: string, domain: string) {
+        if (process.env.NODE_ENV === "development" && process.env.PLASMO_TAG === "dev") return DEFAULT_DEMO_DATA
         const url = new URL(API)
         url.searchParams.append("url", domain)
         url.searchParams.append("version", "2")

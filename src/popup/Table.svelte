@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { Data } from "~types"
-    import Loader from "./loader.svelte";
-    import { Divider, NoticeBar, Icon } from 'stdf';
+    import { Divider, NoticeBar, Icon, Loading } from 'stdf';
     import Warn from "./warn.svelte"
     import { DEFAULT_DEMO_DATA } from "~default-data";
     let data: Data;
@@ -10,6 +9,11 @@
     let showDNS: boolean;
     let showICP: boolean;
     let showNotice = true;
+    let errorMsg = {
+        server: "貌似服务器出了点错，请稍候再试试看",
+        limited: "今日已经查询太多次啦",
+        timeout: "服务器超时，请稍候重试",
+    }
 
     async function fetch_data(API: string, domain: string) {
         if (process.env.NODE_ENV === "development" && process.env.PLASMO_TAG === "dev") return DEFAULT_DEMO_DATA
@@ -25,9 +29,17 @@
         if (showICP) {
             url.searchParams.append("icp", "1")
         }
-        const res = await fetch(url);
-        if (res.ok || res.status === 429) {
-            return res.json();
+        try {
+            const res = await fetch(url, {signal: AbortSignal.timeout(5000)});
+            if (!res || !res.ok) {
+                data = {msg: errorMsg.server}
+            } else if (res.status === 429) {
+                data = {msg: errorMsg.limited}
+            } else {
+                return res.json()
+            }
+        } catch (err) {
+            return {msg: errorMsg.timeout}
         }
     }
 
@@ -72,7 +84,7 @@
 
 {#if data}
     {#if data.msg}
-        <p>{data.msg}</p>
+        <p class="p-2 text-warning">{data.msg}</p>
     {/if}
 
     {#if showICP && data.icp}
@@ -238,7 +250,7 @@
         <Warn warn={data.warn} />
     {/if}
 {:else}
-    <Loader />
+    <Loading type="1_17" />
     <p>...waiting...</p>
 {/if}
 

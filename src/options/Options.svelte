@@ -44,6 +44,7 @@
 </script>
 
 <div class="container max-w-xl mx-auto">
+    <h2 class="text-xl text-slate-800 font-bold">Options</h2>
     <label class="flex items-center justify-between p-4 mx-2 my-4 shadow-sm">
         <span class="font-medium">ICP API URL</span>
         <div class="w-3/4 space-y-2">

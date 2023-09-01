@@ -186,9 +186,11 @@ Display the ICP info of current tab's domain, only when you click the extension 
 
 <span id="nav-13"></span>
 
-<!-- ## Sponsors -->
+## Sponsors
 
 <!-- Fill in the list of sponsors here -->
+
+<a href="https://github.com/labring/laf"><img alt="labring/laf" src="https://img.shields.io/badge/laf.run-red?logo=github&label=labring%2Flaf&color=%2300beb1&link=https%3A%2F%2Fgithub.com%2Flabring%2Flaf&link=https%3A%2F%2Flaf.run"/></a>
 
 <span id="nav-14"></span>
 

@@ -79,6 +79,12 @@ ICP Query Extension 是一个开源的浏览器扩展,用于:
       - 如有需要，在 `选项` 页面设置API URL
   4. 尽情享受独属于你的快乐时光
 
+## 赞助商
+
+<!-- Fill in the list of sponsors here -->
+
+<a href="https://github.com/labring/laf"><img alt="labring/laf" src="https://img.shields.io/badge/laf.run-red?logo=github&label=labring%2Flaf&color=%2300beb1&link=https%3A%2F%2Fgithub.com%2Flabring%2Flaf&link=https%3A%2F%2Flaf.run"/></a>
+
 ## 关于 API
 
 该扩展程序所使用的 API 是独立且可扩展的。任何符合以下数据结构的 API 都可以应用于此扩展程序：

@@ -30,7 +30,7 @@
             url.searchParams.append("icp", "1")
         }
         try {
-            const res = await fetch(url, {signal: AbortSignal.timeout(5000)});
+            const res = await fetch(url, {signal: AbortSignal.timeout(30000)});
             if (!res || !res.ok) {
                 data = {msg: errorMsg.server}
             } else if (res.status === 429) {

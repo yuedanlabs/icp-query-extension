@@ -65,7 +65,7 @@
         </p>
         <p style="color: red;">
           For a better experience, please send us an email to apply for your
-          exclusive token.
+          own token.
         </p>
         <div class="mt-8">
           <a

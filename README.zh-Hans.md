@@ -2,7 +2,7 @@
   <img src="./assets/icon.png" height="128" />
 </p>
 <p align="center">
-Browser Extension for ICP、DNS、Whois & GEO Query
+Browser Extension for ICP, DNS, Whois & GEO Queries
 </p>
 <p align="center">
 <a href="https://github.com/yuedanlabs/icp-query-extension/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/yuedanlabs/icp-query-extension?style=flat-square"/></a>
@@ -12,16 +12,16 @@ Browser Extension for ICP、DNS、Whois & GEO Query
 
 ## 简介
 
-ICP Query Extension 是一个开源的浏览器扩展,用于:
+ICP Query Extension 是一款开源的浏览器扩展程序,可方便地查询以下相关信息：
 
-  - ICP 查询
-  - DNS 查询
-  - Whois 查询
-  - 服务器位置和 ISP 查找
+  - ICP
+  - DNS
+  - Whois
+  - 服务器位置和ISP
 
 ## 安装
 
-1. [Chrome 应用商店](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa): 直接从 Chrome 商店安装。 **推荐 👈**
+1. [Chrome 应用商店](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa): 直接从 Chrome 商店安装。 (推荐)
 2. [发布的源代码](https://github.com/yuedanlabs/icp-query-extension/releases): 下载 zip 发布包进行手动安装。
 3. 从源代码构建，流程见下面
 
@@ -32,52 +32,53 @@ ICP Query Extension 是一个开源的浏览器扩展,用于:
 <p align="center">
   <img src="./images/shortcut-05.jpg" height="128" />
   <br>
-  (0. Main Page)
+  (主页面)
 </p>
 <p align="center">
   <img src="./images/shortcut.png" height="128" />
   <br>
-  (1. Main Page)
+  (主页面)
 </p>
 <p align="center">
   <img src="./images/shortcut-02.png" height="128" />
   <br>
-  (2. Main Page with no API)
+  (无 API 时的主页面)
 </p>
 <p align="center">
   <img src="./images/shortcut-03.png" height="128" />
   <br>
-  (3. Options Page)
+  (选项页面)
 </p>
 <p align="center">
   <img src="./images/shortcut-06.png" height="128" />
   <br>
-  (4. Options Page)
+  (选项页面)
 </p>
 
 ## 源码构建
 
-- 从 [源代码](https://github.com/yuedanlabs/icp-query-extension.git) 构建拓展
-  1. 克隆本仓库代码到本地机器
+从源代码构建扩展程序:
+
+  1. 克隆本仓库代码到本地机器。
       ```bash
       $ git clone https://github.com/yuedanlabs/icp-query-extension.git
       ```
-  2. 构建拓展
+  2. 构建扩展程序。
       ```bash
       $ cd icp-query-extension
       $ pnpm install
       $ pnpm run build
       ```
-      然后可以在 `build/chrome-mv3-prod` 目录下查看dist文件,在Chrome中使用。
-  3. 安装扩展程序
-      - 在Chrome浏览器中打开 `chrome://extensions/`
-      - 在右上角打开 `开发者模式`
-      - 点击 `加载已解压的扩展程序` 按钮
-      - 选择 `icp-query-extension/build/chrome-mv3-prod` 文件夹
-      - 点击 `选择` 按钮
-      - 如有需要，将拓展 `固定` 在工具栏
-      - 如有需要，在 `选项` 页面设置API URL
-  4. 尽情享受独属于你的快乐时光
+      构建产物将位于 `build/chrome-mv3-prod` 目录下。
+  3. 在 Chrome 中安装扩展程序。
+      - 打开 Chrome 浏览器并访问 `chrome://extensions/`。
+      - 启用右上角的"开发者模式"。
+      - 点击"加载已解压的扩展程序"按钮。
+      - 选择 `icp-query-extension/build/chrome-mv3-prod` 文件夹。
+      - 点击"加载"按钮。
+      - 如需要,可将扩展程序固定到工具栏。
+      - 在"选项"页面设置 API URL。
+  4. 尽情享用!
 
 ## 赞助商
 
@@ -87,17 +88,17 @@ ICP Query Extension 是一个开源的浏览器扩展,用于:
 
 ## 关于 API
 
-该扩展程序所使用的 API 是独立且可扩展的。任何符合以下数据结构的 API 都可以应用于此扩展程序：
+该扩展程序设计为与任何符合以下数据结构的 API 兼容:
 
 - API URL
 
-  API 需要一个 `url` 查询参数:
-    - url: 要查询的域名
+  API URL 应包含查询参数 `url`,用于指定要查询的域名。
 
-  示例：
-    - `https://your-domain/release/icp?url=www.baidu.com`
+  示例: `https://your-domain/release/icp?url=www.baidu.com`
 
 - API 响应数据
+
+  API 应返回符合以下结构的 JSON 响应
 
   - API V2
   ```json
@@ -214,6 +215,7 @@ ICP Query Extension 是一个开源的浏览器扩展,用于:
 - [x] DNS
 - [ ] GongAn Record
 - [x] GEO & ISP
+- [x] ICP
 - [ ] Other domains under the same subject
 - [ ] Options API and custom API
 

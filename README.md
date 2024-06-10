@@ -4,7 +4,7 @@
 </p>
 <p align="center">
 <!-- Fill in your project slogan here, preferably a short sentence. -->
-Browser Extension for ICP、DNS、Whois & GEO Query
+Browser Extension for ICP, DNS, Whois & GEO Queries
 </p>
 <p align="center">
 <a href="https://github.com/yuedanlabs/icp-query-extension/blob/main/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/yuedanlabs/icp-query-extension?style=flat-square"/></a>
@@ -48,14 +48,14 @@ Browser Extension for ICP、DNS、Whois & GEO Query
 
 <span id="nav-3"></span>
 
-## Introductions
+## Introduction
 
 <!-- Fill in the detailed introduction about your project here -->
-ICP Query Extension is an open source browser extension for:
-  - ICP query
-  - DNS query
-  - Whois query
-  - Server location and ISP lookup
+ICP Query Extension is an open-source browser extension that allows you to conveniently query details for the current website you're visiting, including:
+ - ICP
+ - DNS
+ - Whois
+ - GEO (geographic location and ISP) 
 
 <!-- > 👏 Now we can install the app in the chrome webstore: 👉 [ICP Query Extension](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa) -->
 
@@ -73,46 +73,46 @@ ICP Query Extension is an open source browser extension for:
 
 <span id="nav-4"></span>
 
-## Install
+## Installation
 
-1. [Chrome Web Store](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa): Install directly from the Chrome Web Store. **Recommend 👈**
+1. [Chrome Web Store](https://chrome.google.com/webstore/detail/icp-query-extension/plmfnmaihcmijdanpbondfejclejejfa): Install directly from the Chrome Web Store (Recommended).
 2. [Source Releases](https://github.com/yuedanlabs/icp-query-extension/releases): Download the zip release package for manual installation.
-3. Build from source as follows
+3. Build from source code (follow the instructions in the "Getting Started" section).
 
 ## Graphic Demo
 
 <!-- Place the demo of your project here, which can be a specific visit address, picture screenshot, Gif or video, etc. -->
-Display the ICP info of current tab's domain, only when you click the extension icon.
+Display the ICP info of current tab's domain, with only just one click on the extension icon.
 
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut-05.jpg" height="128" />
   <br>
-  (0. Main Page)
+  (Main Page)
 </p>
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut.png" height="128" />
   <br>
-  (1. Main Page)
+  (Main Page)
 </p>
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut-02.png" height="128" />
   <br>
-  (2. Main Page with no API)
+  (Main Page with no API)
 </p>
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut-03.png" height="128" />
   <br>
-  (3. Options Page)
+  (Options Page)
 </p>
 <p align="center">
   <!-- Set your project logo image here -->
   <img src="./images/shortcut-06.png" height="128" />
   <br>
-  (4. Options Page)
+  (Options Page)
 </p>
 
 <span id="nav-5"></span>
@@ -131,8 +131,8 @@ Display the ICP info of current tab's domain, only when you click the extension 
 
 ## Getting Started
 
-<!-- Write the detailed instructions for the project here, and tell users how to use your project. -->
-- Build the extension from the [source code](https://github.com/yuedanlabs/icp-query-extension.git)
+To build the extension from the source code:
+
   1. Clone this repository to your local machine.
       ```bash
       $ git clone https://github.com/yuedanlabs/icp-query-extension.git
@@ -143,15 +143,15 @@ Display the ICP info of current tab's domain, only when you click the extension 
       $ pnpm install
       $ pnpm run build
       ```
-      then you can check the dist files in `build/chrome-mv3-prod` directory, and use it in Chrome.
-  3. Install the extension.
-      - open `chrome://extensions/` in your Chrome browser.
-      - open the `Developer Mode` in the top right corner.
-      - click the `Load unpacked extension...` button.
-      - select the `icp-query-extension/build/chrome-mv3-prod` folder.
-      - click the `Load` button.
-      - Pin the extension to the `Toolbar`, if needed.
-      - Set the API URL in the `Options` page.
+      The `dist` files will be available in the `build/chrome-mv3-prod` directory.
+  3. Install the extension in Chrome.
+      - Open `chrome://extensions/` in your Chrome browser.
+      - Enable "Developer Mode" in the top right corner.
+      - Click the "Load unpacked extension..." button.
+      - Select the `icp-query-extension/build/chrome-mv3-prod` folder.
+      - Click the "Load" button.
+      - Pin the extension to the toolbar if desired.
+      - Set the API URL in the "Options" page.
   4. Enjoy!
 
 <span id="nav-8"></span>
@@ -202,17 +202,14 @@ Display the ICP info of current tab's domain, only when you click the extension 
 
 ## About the API
 
-The API is separate and extensible. Any API that conforms to the following data structure can be applied to this extension:
+This extension is designed to work with any API that conforms to the following data structure:
 
 - API URL
-
-  the api url has a query parameter:
-    - url: the domain name to be queried.
-
-  for example:
-    - `https://your-domain/release/icp?url=www.baidu.com`
+  The API URL should include a query parameter `url` for the domain to be queried.
+  Example: `https://your-domain/release/icp?url=www.baidu.com`
 
 - API Response Data
+  The API should return a JSON response with the following structure:
 
   - API V2
   ```json
@@ -329,6 +326,7 @@ The API is separate and extensible. Any API that conforms to the following data 
 - [x] DNS
 - [ ] GongAn Record
 - [x] GEO & ISP
+- [x] ICP
 - [ ] Other domains under the same subject
 - [ ] Options API and custom API
 

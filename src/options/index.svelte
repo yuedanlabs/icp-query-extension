@@ -54,7 +54,7 @@
     <div class="w-3/4">
       <svelte:component this={current?.component} />
 
-      <div class="contact" style="margin-top: 10rem;">
+      <!-- <div class="contact" style="margin-top: 10rem;">
         <Divider
           px="8"
           line="dashed"
@@ -73,7 +73,7 @@
             href="mailto:yuedan.work@gmail.com?subject=Apply%20Token%20for%20ICP%20Query%20Extension&body=Please%20include%20your%20email%20address%20here.%0A%0AEmail%3A%20%3Cyour%20email%20address%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))"
             style="font-size: medium;">Click to Apply</a>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </main>

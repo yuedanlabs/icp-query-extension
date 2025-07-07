@@ -90,7 +90,7 @@
     {#if showICP && data.icp}
         <Divider text="ICP" />
         {#if data.icp.subject && data.icp.website}
-            <table class="min-w-[260px]">
+            <table class="min-w-[280px] w-full max-w-[320px]">
                 <tbody>
                     <!-- <tr>
                         <td class="head">备案名称</td>
@@ -125,7 +125,7 @@
 
         {#if showWhois && data.whois}
             <Divider text="WHOIS" />
-            <table class="min-w-[260px]">
+            <table class="min-w-[280px] w-full max-w-[320px]">
                 <tbody>
                     <tr>
                         <td class="head">域名状态</td>
@@ -172,7 +172,7 @@
 
         {#if showDNS && data.dns}
             <Divider text="DNS" />
-            <table class="min-w-[260px]">
+            <table class="min-w-[280px] w-full max-w-[320px]">
                 <tbody>
                     <tr>
                         <td class="head">A</td>
@@ -250,30 +250,160 @@
         <Warn warn={data.warn} />
     {/if}
 {:else}
-    <Loading type="1_17" />
-    <p>...waiting...</p>
+    <div class="loading-container">
+        <Loading type="1_17" />
+        <p>正在查询中...</p>
+    </div>
 {/if}
 
 <style>
     table {
         margin: auto;
+        border-spacing: 0;
+        border-collapse: separate;
+    }
+
+    table tbody tr {
+        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+    }
+
+    table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    table td {
+        padding: 8px 4px;
+        vertical-align: top;
     }
 
     .head {
         display: inline-block;
-        width: 3.5rem;
+        width: 4rem;
         text-align: justify;
         text-align-last: justify;
+        font-weight: 500;
+        color: rgb(55, 65, 81);
+        font-size: 12px;
+        line-height: 1.4;
     }
 
     .text {
-        font-size: 10px;
-        opacity: 0.6;
+        font-size: 12px;
+        color: rgb(107, 114, 128);
+        line-height: 1.4;
+        word-break: break-all;
+    }
+
+    .text li {
+        list-style: none;
+        margin: 2px 0;
+        padding: 1px 6px;
+        background-color: rgba(243, 244, 246, 0.8);
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 11px;
+    }
+
+    .text a {
+        color: rgb(59, 130, 246);
+        transition: color 0.2s ease;
+    }
+
+    .text a:hover {
+        color: rgb(37, 99, 235);
     }
 
     .feedback {
-        font-size: xx-small;
-        opacity: 0.6;
-        color: blue;
+        font-size: 11px;
+        color: rgb(107, 114, 128);
+        padding: 8px;
+        text-align: center;
+        border-top: 1px solid rgba(229, 231, 235, 0.5);
+        margin-top: 8px;
+    }
+
+    .feedback a {
+        color: rgb(59, 130, 246);
+        text-decoration: none;
+        margin: 0 4px;
+        transition: color 0.2s ease;
+    }
+
+    .feedback a:hover {
+        color: rgb(37, 99, 235);
+        text-decoration: underline;
+    }
+
+    .feedback button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgb(156, 163, 175);
+        transition: color 0.2s ease;
+        padding: 2px;
+        border-radius: 2px;
+    }
+
+    .feedback button:hover {
+        color: rgb(107, 114, 128);
+        background-color: rgba(243, 244, 246, 0.5);
+    }
+
+    /* 响应式优化 */
+    @media (max-width: 320px) {
+        .head {
+            width: 3.5rem;
+        }
+        
+        .text {
+            font-size: 11px;
+        }
+        
+        .text li {
+            font-size: 10px;
+        }
+    }
+
+    /* 深色模式支持 */
+    @media (prefers-color-scheme: dark) {
+        .head {
+            color: rgb(209, 213, 219);
+        }
+        
+        .text {
+            color: rgb(156, 163, 175);
+        }
+        
+        .text li {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
+        
+        table tbody tr {
+            border-bottom-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        .feedback {
+            color: rgb(156, 163, 175);
+            border-top-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        .feedback button:hover {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
+    }
+
+    /* 加载状态优化 */
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        color: rgb(107, 114, 128);
+    }
+
+    .loading-container p {
+        margin-top: 8px;
+        font-size: 12px;
     }
 </style>

@@ -39,6 +39,54 @@
         return date.toLocaleDateString()
     }
 
+    function asStringArray(raw: unknown): string[] {
+        if (Array.isArray(raw)) {
+            return raw.map((item) => String(item).trim()).filter(Boolean)
+        }
+        if (typeof raw === "string") {
+            return raw.split(/[\n,]+/).map((item) => item.trim()).filter(Boolean)
+        }
+        return []
+    }
+
+    function normalizeData(raw: unknown): Data {
+        if (!raw || typeof raw !== "object") {
+            return { msg: errorMsg.server }
+        }
+        const source = raw as Record<string, unknown>
+        const normalized = source as Data
+
+        // 兼容 API V1: 顶层 subject/website
+        if (!normalized.icp && (source.subject || source.website || source.msg)) {
+            normalized.icp = {
+                subject: source.subject as Data["icp"]["subject"],
+                website: source.website as Data["icp"]["website"],
+                msg: typeof source.msg === "string" ? source.msg : undefined,
+            }
+        }
+
+        if (normalized.whois) {
+            normalized.whois = {
+                ...normalized.whois,
+                "Domain Status": asStringArray((normalized.whois as Record<string, unknown>)["Domain Status"]),
+                "Name Server": asStringArray((normalized.whois as Record<string, unknown>)["Name Server"]),
+            }
+        }
+
+        if (normalized.dns) {
+            normalized.dns = {
+                ...normalized.dns,
+                A: asStringArray((normalized.dns as Record<string, unknown>).A),
+                AAAA: asStringArray((normalized.dns as Record<string, unknown>).AAAA),
+                CNAME: asStringArray((normalized.dns as Record<string, unknown>).CNAME),
+                NS: asStringArray((normalized.dns as Record<string, unknown>).NS),
+                GEO: normalized.dns.GEO,
+            }
+        }
+
+        return normalized
+    }
+
     async function fetch_data(API: string, domain: string): Promise<Data> {
         if (process.env.NODE_ENV === "development" && process.env.PLASMO_TAG === "dev") return DEFAULT_DEMO_DATA
         let url: URL
@@ -51,12 +99,18 @@
         url.searchParams.set("version", "2")
         if (showWhois) {
             url.searchParams.set("whois", "1")
+        } else {
+            url.searchParams.delete("whois")
         }
         if (showDNS) {
             url.searchParams.set("dns", "1")
+        } else {
+            url.searchParams.delete("dns")
         }
         if (showICP) {
             url.searchParams.set("icp", "1")
+        } else {
+            url.searchParams.delete("icp")
         }
         try {
             const res = await fetch(url.toString(), { signal: AbortSignal.timeout(30000) });
@@ -67,8 +121,8 @@
                 return { msg: errorMsg.server }
             } else {
                 const result = await res.json()
-                const normalized = Array.isArray(result) ? result[0] : result
-                return normalized || { msg: errorMsg.server }
+                const payload = Array.isArray(result) ? result[0] : result
+                return normalizeData(payload)
             }
         } catch (err) {
             if (err instanceof DOMException && err.name === "TimeoutError") {
@@ -105,6 +159,7 @@
         showNotice = (res.show_notice?.version >= 10000 && res.show_notice.value === false) ? false : true
     })
     const close_notice = () => {
+        showNotice = false
         chrome.storage.local.set({show_notice: {
             version: 10000,
             value: false,
@@ -168,6 +223,9 @@
                     <tr>
                         <td class="head">域名状态</td>
                         <td class="text">
+                            {#if (data.whois["Domain Status"] || []).length === 0}
+                                <span>-</span>
+                            {/if}
                             {#each (data.whois["Domain Status"] || []).map(e => e.split(' ')[0]) as item, i}
                                 <li>{item}</li>
                             {/each}</td>
@@ -175,6 +233,9 @@
                     <tr>
                         <td class="head">DNS 服务器</td>
                         <td class="text">
+                            {#if (data.whois["Name Server"] || []).length === 0}
+                                <span>-</span>
+                            {/if}
                             {#each (data.whois["Name Server"] || []) as item, i}
                                 <li>{item}</li>
                             {/each}
@@ -182,7 +243,7 @@
                     </tr>
                     <tr>
                         <td class="head">注册日期</td>
-                        <td class="text">{data.whois["Created Date"]}</td>
+                        <td class="text">{data.whois["Created Date"] || "-"}</td>
                     </tr>
                     <tr>
                         <td class="head">更新日期</td>
@@ -190,11 +251,11 @@
                     </tr>
                     <tr>
                         <td class="head">截止日期</td>
-                        <td class="text">{data.whois["Expiry Date"]}</td>
+                        <td class="text">{data.whois["Expiry Date"] || "-"}</td>
                     </tr>
                     <tr>
                         <td class="head">注册商</td>
-                        <td class="text">{data.whois["Registrar"]}</td>
+                        <td class="text">{data.whois["Registrar"] || "-"}</td>
                     </tr>
                     <tr>
                         <td class="head">所属机构</td>

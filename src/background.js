@@ -33,12 +33,25 @@ const hasIcpSuffix = (hostname) => {
     return AllICPSuffix.some((suffix) => hostname.endsWith(suffix))
 }
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status !== "complete") return
-    const hostname = parseHostname(tab?.url)
+const updateActionIconByTabUrl = (tabId, rawUrl) => {
+    const hostname = parseHostname(rawUrl)
     if (!hostname) {
         chrome.action.setIcon({ path: icon_grey, tabId })
         return
     }
     chrome.action.setIcon({ path: hasIcpSuffix(hostname) ? icon : icon_grey, tabId })
+}
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status !== "complete") return
+    updateActionIconByTabUrl(tabId, tab?.url)
+})
+
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+    chrome.tabs.get(tabId, (tab) => {
+        if (chrome.runtime.lastError) {
+            return
+        }
+        updateActionIconByTabUrl(tabId, tab?.url)
+    })
 })

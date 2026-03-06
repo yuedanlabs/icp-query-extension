@@ -15,21 +15,21 @@ export interface Data {
     }
   }
   whois?: {
-    "Domain Status": string[]
-    "Name Server": string[]
-    "Created Date": string
+    "Domain Status"?: string[]
+    "Name Server"?: string[]
+    "Created Date"?: string
     "Updated Date"?: string
-    "Expiry Date": string
-    Registrar: string
+    "Expiry Date"?: string
+    Registrar?: string
     "Registrant Organization"?: string
     "Registrant Country"?: string
   }
   dns?: {
-    A: string[]
-    AAAA: string[]
-    CNAME: string[]
-    NS: string[]
-    GEO: {
+    A?: string[]
+    AAAA?: string[]
+    CNAME?: string[]
+    NS?: string[]
+    GEO?: {
       isp?: string
       area?: string
     }

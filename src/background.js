@@ -14,10 +14,31 @@ chrome.runtime.onInstalled.addListener((res) => {
 
 import { AllICPSuffix } from "./icp-suffix";
 import icon_grey from "url:~assets/icon_grey.png"
+import icon from "url:~assets/icon.png"
+
+const parseHostname = (rawUrl) => {
+    if (!rawUrl) return null
+    try {
+        const url = new URL(rawUrl)
+        if (url.protocol !== "http:" && url.protocol !== "https:") {
+            return null
+        }
+        return url.hostname
+    } catch (e) {
+        return null
+    }
+}
+
+const hasIcpSuffix = (hostname) => {
+    return AllICPSuffix.some((suffix) => hostname.endsWith(suffix))
+}
+
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status !== "complete") return
-    const { hostname } = new URL(tab.url)
-    if (!AllICPSuffix.find(e => hostname.endsWith(e))) {
-        chrome.action.setIcon({path: icon_grey, tabId})
+    const hostname = parseHostname(tab?.url)
+    if (!hostname) {
+        chrome.action.setIcon({ path: icon_grey, tabId })
+        return
     }
+    chrome.action.setIcon({ path: hasIcpSuffix(hostname) ? icon : icon_grey, tabId })
 })

@@ -1,6 +1,6 @@
 <script lang="ts">
     import logo from "data-base64:~assets/favicon.png";
-    import Table from "./table.svelte";
+    import Table from "./Table.svelte";
     import { Divider } from "stdf";
     import "~style.css"
 </script>

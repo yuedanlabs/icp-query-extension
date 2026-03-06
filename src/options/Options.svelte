@@ -14,17 +14,17 @@
 
     function save_options() {
         validation = "";
-        if (options.api_url.length < 8) {
+        const apiUrl = options.api_url?.trim() || "";
+        try {
+            const parsed = new URL(apiUrl)
+            if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+                throw new Error("invalid protocol")
+            }
+        } catch (e) {
             validation = "Please enter a valid URL";
             return false;
         }
-        if (
-            options.api_url.substring(0, 7) != "http://" &&
-            options.api_url.substring(0, 8) != "https://"
-        ) {
-            validation = "Please enter a valid URL";
-            return false;
-        }
+        options.api_url = apiUrl
         chrome.storage.sync.set(
             {
                 options: options,
@@ -38,7 +38,7 @@
 
     chrome.storage.sync.get("options", function (res) {
         if (res.options) {
-            options = res.options;
+            options = { ...options, ...res.options };
         }
     });
 </script>

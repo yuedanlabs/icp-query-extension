@@ -4,47 +4,82 @@
     import Warn from "./warn.svelte"
     import { DEFAULT_DEMO_DATA } from "~default-data";
     let data: Data;
-    let showFeedback: boolean;
-    let showWhois: boolean;
-    let showDNS: boolean;
-    let showICP: boolean;
+    let showFeedback = true;
+    let showWhois = true;
+    let showDNS = true;
+    let showICP = true;
     let showNotice = true;
     let errorMsg = {
         server: "貌似服务器出了点错，请稍候再试试看",
         limited: "今日已经查询太多次啦",
         timeout: "服务器超时，请稍候重试",
+        invalidApi: "API 地址格式错误，请前往选项页检查",
+        invalidPage: "当前页面不支持查询（仅支持 HTTP/HTTPS 页面）",
     }
 
-    async function fetch_data(API: string, domain: string) {
+    function extractDomain(rawUrl?: string) {
+        if (!rawUrl) return null
+        try {
+            const parsed = new URL(rawUrl)
+            if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+                return null
+            }
+            return parsed.hostname
+        } catch (e) {
+            return null
+        }
+    }
+
+    function formatDate(rawDate?: string) {
+        if (!rawDate) return "-"
+        const date = new Date(rawDate)
+        if (Number.isNaN(date.getTime())) {
+            return rawDate
+        }
+        return date.toLocaleDateString()
+    }
+
+    async function fetch_data(API: string, domain: string): Promise<Data> {
         if (process.env.NODE_ENV === "development" && process.env.PLASMO_TAG === "dev") return DEFAULT_DEMO_DATA
-        const url = new URL(API)
-        url.searchParams.append("url", domain)
-        url.searchParams.append("version", "2")
+        let url: URL
+        try {
+            url = new URL(API)
+        } catch (e) {
+            return { msg: errorMsg.invalidApi }
+        }
+        url.searchParams.set("url", domain)
+        url.searchParams.set("version", "2")
         if (showWhois) {
-            url.searchParams.append("whois", "1")
+            url.searchParams.set("whois", "1")
         }
         if (showDNS) {
-            url.searchParams.append("dns", "1")
+            url.searchParams.set("dns", "1")
         }
         if (showICP) {
-            url.searchParams.append("icp", "1")
+            url.searchParams.set("icp", "1")
         }
         try {
-            const res = await fetch(url, {signal: AbortSignal.timeout(30000)});
-            if (!res || !res.ok) {
-                data = {msg: errorMsg.server}
-            } else if (res.status === 429) {
-                data = {msg: errorMsg.limited}
+            const res = await fetch(url.toString(), { signal: AbortSignal.timeout(30000) });
+            if (res.status === 429) {
+                return { msg: errorMsg.limited }
+            }
+            if (!res.ok) {
+                return { msg: errorMsg.server }
             } else {
-                return res.json()
+                const result = await res.json()
+                const normalized = Array.isArray(result) ? result[0] : result
+                return normalized || { msg: errorMsg.server }
             }
         } catch (err) {
-            return {msg: errorMsg.timeout}
+            if (err instanceof DOMException && err.name === "TimeoutError") {
+                return { msg: errorMsg.timeout }
+            }
+            return { msg: errorMsg.server }
         }
     }
 
     chrome.storage.sync.get("options", function (res) {
-        if (res.options && res.options.api_url != "") {
+        if (res.options?.api_url?.trim()) {
             showFeedback = 'show_feedback' in res.options ? res.options.show_feedback : true
             showWhois = 'show_whois' in res.options ? res.options.show_whois : true
             showDNS = 'show_dns' in res.options ? res.options.show_dns: true
@@ -52,9 +87,12 @@
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 async function (tabs) {
-                    let domain = new URL(tabs[0].url).hostname;
-                    const result = await fetch_data(res.options.api_url, domain);
-                    data = Array.isArray(result) ? result[0] : result
+                    const domain = extractDomain(tabs[0]?.url);
+                    if (!domain) {
+                        data = { msg: errorMsg.invalidPage }
+                        return
+                    }
+                    data = await fetch_data(res.options.api_url, domain);
                 }
             );
         } else {
@@ -114,7 +152,7 @@
                     </tr>
                     <tr>
                         <td class="head">备案日期</td>
-                        <td class="text">{(new Date(data.icp.subject.updateTime)).toLocaleDateString()}</td>
+                        <td class="text">{formatDate(data.icp.subject.updateTime)}</td>
                     </tr>
                 </tbody>
             </table>
@@ -130,14 +168,14 @@
                     <tr>
                         <td class="head">域名状态</td>
                         <td class="text">
-                            {#each data.whois["Domain Status"].map(e=>e.split(' ')[0]) as item, i}
+                            {#each (data.whois["Domain Status"] || []).map(e => e.split(' ')[0]) as item, i}
                                 <li>{item}</li>
                             {/each}</td>
                     </tr>
                     <tr>
                         <td class="head">DNS 服务器</td>
                         <td class="text">
-                            {#each data.whois["Name Server"] as item, i}
+                            {#each (data.whois["Name Server"] || []) as item, i}
                                 <li>{item}</li>
                             {/each}
                         </td>
@@ -177,20 +215,20 @@
                     <tr>
                         <td class="head">A</td>
                         <td class="text">
-                            {#if data.dns.A.length === 0}
+                            {#if (data.dns.A || []).length === 0}
                                 <span>-</span>
                             {/if}
-                            {#each data.dns.A as item, i}
+                            {#each (data.dns.A || []) as item, i}
                                 <li>{item}</li>
                             {/each}</td>
                     </tr>
                     <tr>
                         <td class="head">AAAA</td>
                         <td class="text">
-                            {#if data.dns.AAAA.length === 0}
+                            {#if (data.dns.AAAA || []).length === 0}
                                 <span>-</span>
                             {/if}
-                            {#each data.dns.AAAA as item, i}
+                            {#each (data.dns.AAAA || []) as item, i}
                                 <li>{item}</li>
                             {/each}
                         </td>
@@ -198,10 +236,10 @@
                     <tr>
                         <td class="head">CNAME</td>
                         <td class="text">
-                            {#if data.dns.CNAME.length === 0}
+                            {#if (data.dns.CNAME || []).length === 0}
                                 <span>-</span>
                             {/if}
-                            {#each data.dns.CNAME as item, i}
+                            {#each (data.dns.CNAME || []) as item, i}
                                 <li>{item}</li>
                             {/each}
                         </td>
@@ -209,10 +247,10 @@
                     <tr>
                         <td class="head">DNS 服务器</td>
                         <td class="text">
-                            {#if data.dns.NS.length === 0}
+                            {#if (data.dns.NS || []).length === 0}
                                 <span>-</span>
                             {/if}
-                            {#each data.dns.NS as item, i}
+                            {#each (data.dns.NS || []) as item, i}
                                 <li>{item}</li>
                             {/each}
                         </td>

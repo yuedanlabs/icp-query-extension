@@ -39,6 +39,10 @@
         return date.toLocaleDateString()
     }
 
+    function formatDomainStatus(status: string) {
+        return status.replace(/\s+https?:\/\/\S+$/i, "").trim()
+    }
+
     function asStringArray(raw: unknown): string[] {
         if (Array.isArray(raw)) {
             return raw.map((item) => String(item).trim()).filter(Boolean)
@@ -226,8 +230,8 @@
                             {#if (data.whois["Domain Status"] || []).length === 0}
                                 <span>-</span>
                             {/if}
-                            {#each (data.whois["Domain Status"] || []).map(e => e.split(' ')[0]) as item, i}
-                                <li>{item}</li>
+                            {#each (data.whois["Domain Status"] || []) as item, i}
+                                <li>{formatDomainStatus(item)}</li>
                             {/each}</td>
                     </tr>
                     <tr>

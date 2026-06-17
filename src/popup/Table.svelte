@@ -1,20 +1,21 @@
 <script lang="ts">
     import type { Data } from "~types"
-    import { Divider, NoticeBar, Icon, Loading } from 'stdf';
     import Warn from "./warn.svelte"
-    import { DEFAULT_DEMO_DATA } from "~default-data";
-    let data: Data;
-    let showFeedback = true;
-    let showWhois = true;
-    let showDNS = true;
-    let showICP = true;
-    let showNotice = true;
+    import { DEFAULT_DEMO_DATA } from "~default-data"
+
+    let data: Data
+    let currentDomain = ""
+    let showFeedback = true
+    let showWhois = true
+    let showDNS = true
+    let showICP = true
+    let showNotice = true
     let errorMsg = {
-        server: "貌似服务器出了点错，请稍候再试试看",
-        limited: "今日已经查询太多次啦",
-        timeout: "服务器超时，请稍候重试",
+        server: "服务器暂时不可用，请稍后重试",
+        limited: "今日查询次数已达上限",
+        timeout: "服务器响应超时，请稍后重试",
         invalidApi: "API 地址格式错误，请前往选项页检查",
-        invalidPage: "当前页面不支持查询（仅支持 HTTP/HTTPS 页面）",
+        invalidPage: "当前页面不支持查询，仅支持 HTTP/HTTPS 页面",
     }
 
     function extractDomain(rawUrl?: string) {
@@ -85,7 +86,6 @@
         const source = raw as Record<string, unknown>
         const normalized = source as Data
 
-        // 兼容 API V1: 顶层 subject/website
         if (!normalized.icp && (source.subject || source.website || source.msg)) {
             normalized.icp = {
                 subject: source.subject as Data["icp"]["subject"],
@@ -142,7 +142,7 @@
             url.searchParams.delete("icp")
         }
         try {
-            const res = await fetch(url.toString(), { signal: AbortSignal.timeout(30000) });
+            const res = await fetch(url.toString(), { signal: AbortSignal.timeout(30000) })
             if (res.status === 429) {
                 return { msg: errorMsg.limited }
             }
@@ -163,36 +163,39 @@
 
     chrome.storage.sync.get("options", function (res) {
         if (res.options?.api_url?.trim()) {
-            showFeedback = 'show_feedback' in res.options ? res.options.show_feedback : true
-            showWhois = 'show_whois' in res.options ? res.options.show_whois : true
-            showDNS = 'show_dns' in res.options ? res.options.show_dns: true
-            showICP = 'show_icp' in res.options ? res.options.show_icp: true
+            showFeedback = "show_feedback" in res.options ? res.options.show_feedback : true
+            showWhois = "show_whois" in res.options ? res.options.show_whois : true
+            showDNS = "show_dns" in res.options ? res.options.show_dns : true
+            showICP = "show_icp" in res.options ? res.options.show_icp : true
             chrome.tabs.query(
                 { active: true, currentWindow: true },
                 async function (tabs) {
-                    const domain = extractDomain(tabs[0]?.url);
+                    const domain = extractDomain(tabs[0]?.url)
                     if (!domain) {
                         data = { msg: errorMsg.invalidPage }
                         return
                     }
-                    data = await fetch_data(res.options.api_url, domain);
+                    currentDomain = domain
+                    data = await fetch_data(res.options.api_url, domain)
                 }
-            );
+            )
         } else {
-            data = { msg: "请先配置API" };
+            data = { msg: "请先配置 API 地址" }
         }
-    });
+    })
 
-    // notice setting
-    chrome.storage.local.get("show_notice").then((res)=>{
+    chrome.storage.local.get("show_notice").then((res) => {
         showNotice = (res.show_notice?.version >= 10000 && res.show_notice.value === false) ? false : true
     })
+
     const close_notice = () => {
         showNotice = false
-        chrome.storage.local.set({show_notice: {
-            version: 10000,
-            value: false,
-        }})
+        chrome.storage.local.set({
+            show_notice: {
+                version: 10000,
+                value: false,
+            },
+        })
     }
 
     const show_option_page = () => {
@@ -200,338 +203,489 @@
     }
 </script>
 
-{#if showNotice}
-    <NoticeBar leftIcon="slot" fontSize="xs" injClass="text-success bg-success/10 mt-2" textList={['本次更新，默认显示当前网站域名的 ICP 信息，如不需要，可前往配置（选项）页面关闭']} on:clickright={close_notice}>🥳</NoticeBar>
-{/if}
-
-{#if data}
-    {#if data.msg}
-        <p class="p-2 text-warning">{data.msg}</p>
-    {/if}
-
-    {#if showICP && data.icp}
-        <Divider text="ICP" />
-        {#if data.icp.subject && data.icp.website}
-            <table class="min-w-[280px] w-full max-w-[320px]">
-                <tbody>
-                    <!-- <tr>
-                        <td class="head">备案名称</td>
-                        <td class="text">{data.website.name}</td>
-                    </tr> -->
-                    <tr>
-                        <td class="head">备案类型</td>
-                        <td class="text">{data.icp.subject.nature}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">主办方</td>
-                        {#if data.icp.subject.nature === "企业"}
-                            <td class="text"><a class="underline decoration-1 hover:decoration-2 underline-offset-4 hover:text-success" href="https://www.tianyancha.com/search?key={data.icp.subject.name}" target="_blank" rel="noopener noreferrer">{data.icp.subject.name}<svg class="icon mx-[2px] inline-block" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256"><path fill="currentColor" d="M137.54 186.36a8 8 0 0 1 0 11.31l-9.94 10a56 56 0 0 1-79.22-79.27l24.12-24.12a56 56 0 0 1 76.81-2.28a8 8 0 1 1-10.64 12a40 40 0 0 0-54.85 1.63L59.7 139.72a40 40 0 0 0 56.58 56.58l9.94-9.94a8 8 0 0 1 11.32 0Zm70.08-138a56.08 56.08 0 0 0-79.22 0l-9.94 9.95a8 8 0 0 0 11.32 11.31l9.94-9.94a40 40 0 0 1 56.58 56.58l-24.12 24.14a40 40 0 0 1-54.85 1.6a8 8 0 1 0-10.64 12a56 56 0 0 0 76.81-2.26l24.12-24.12a56.08 56.08 0 0 0 0-79.24Z"/></svg></a></td>
-                        {:else}
-                            <td class="text">{data.icp.subject.name}</td>
-                        {/if}
-                    </tr>
-                    <tr>
-                        <td class="head">备案号</td>
-                        <td class="text">{data.icp.subject.license}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">备案日期</td>
-                        <td class="text">{formatDate(data.icp.subject.updateTime)}</td>
-                    </tr>
-                </tbody>
-            </table>
-        {:else}
-            <p>{data.icp.msg}</p>
-        {/if}
-    {/if}
-
-        {#if showWhois && data.whois}
-            <Divider text="WHOIS" />
-            <table class="min-w-[280px] w-full max-w-[320px]">
-                <tbody>
-                    <tr>
-                        <td class="head">域名状态</td>
-                        <td class="text">
-                            {#if (data.whois["Domain Status"] || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.whois["Domain Status"] || []) as item, i}
-                                <li>{formatDomainStatus(item)}</li>
-                            {/each}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">DNS 服务器</td>
-                        <td class="text">
-                            {#if (data.whois["Name Server"] || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.whois["Name Server"] || []) as item, i}
-                                <li>{item}</li>
-                            {/each}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="head">注册日期</td>
-                        <td class="text">{formatDateTime(data.whois["Created Date"])}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">更新日期</td>
-                        <td class="text">{formatDateTime(data.whois["Updated Date"])}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">截止日期</td>
-                        <td class="text">{formatDateTime(data.whois["Expiry Date"])}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">注册商</td>
-                        <td class="text">{data.whois["Registrar"] || "-"}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">所属机构</td>
-                        <td class="text">{data.whois["Registrant Organization"] || "-"}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">注册属地</td>
-                        <td class="text">{data.whois["Registrant Country"] || "-"}</td>
-                    </tr>
-                </tbody>
-            </table>
-        {/if}
-
-        {#if showDNS && data.dns}
-            <Divider text="DNS" />
-            <table class="min-w-[280px] w-full max-w-[320px]">
-                <tbody>
-                    <tr>
-                        <td class="head">A</td>
-                        <td class="text">
-                            {#if (data.dns.A || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.dns.A || []) as item, i}
-                                <li>{item}</li>
-                            {/each}</td>
-                    </tr>
-                    <tr>
-                        <td class="head">AAAA</td>
-                        <td class="text">
-                            {#if (data.dns.AAAA || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.dns.AAAA || []) as item, i}
-                                <li>{item}</li>
-                            {/each}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="head">CNAME</td>
-                        <td class="text">
-                            {#if (data.dns.CNAME || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.dns.CNAME || []) as item, i}
-                                <li>{item}</li>
-                            {/each}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="head">DNS 服务器</td>
-                        <td class="text">
-                            {#if (data.dns.NS || []).length === 0}
-                                <span>-</span>
-                            {/if}
-                            {#each (data.dns.NS || []) as item, i}
-                                <li>{item}</li>
-                            {/each}
-                        </td>
-                    </tr>
-                    {#if data.dns.GEO}
-                        <tr>
-                            <td class="head">地理位置</td>
-                            <td class="text">
-                                {data.dns.GEO.area || '-'}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="head">运营商</td>
-                            <td class="text">
-                                {data.dns.GEO.isp || '-'}
-                            </td>
-                        </tr>
-                    {/if}
-                </tbody>
-            </table>
-        {/if}
-
-    {#if showFeedback}
-        <Divider text="FEEDBACK" />
-        <div class="feedback">
-            <span>结果不满意?</span>
-            <a href="mailto:yuedan.work+feedback@gmail.com?subject=Feedback%20for%20ICP%20Query%20Extension&body=Email%3A%20%3Cyour%20email%20address%2C%20optional%3E%0A*Token%3A%20%3Cyour%20token%20in%20use%3E%0A*Content%3A%20%3Cinput%20your%20suggestions%20or%20feedback%20here%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))">点击反馈</a>
-            <button on:click={show_option_page} class="ml-4">
-                <Icon name='ri-close-line' size="16" />
-            </button>
+<section class="result-panel">
+    {#if showNotice}
+        <div class="notice-card">
+            <p>默认显示当前网站 ICP 信息，可在设置中关闭。</p>
+            <button type="button" on:click={close_notice}>知道了</button>
         </div>
     {/if}
 
-    {#if data && data.warn}
-        <Warn warn={data.warn} />
+    {#if data}
+        <div class="summary-strip">
+            <span>当前域名</span>
+            <strong>{currentDomain || "未检测到域名"}</strong>
+        </div>
+
+        {#if data.msg}
+            <div class="state-card error-state">
+                <strong>查询未完成</strong>
+                <p>{data.msg}</p>
+                <button type="button" class="iq-button iq-button-secondary state-action" on:click={show_option_page}>检查设置</button>
+            </div>
+        {/if}
+
+        {#if showICP && data.icp}
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>ICP 备案</h2>
+                    <span>主体与备案号</span>
+                </div>
+                {#if data.icp.subject && data.icp.website}
+                    <div class="row-list">
+                        <div class="info-row">
+                            <span>备案类型</span>
+                            <strong>{data.icp.subject.nature}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>主办方</span>
+                            <strong>
+                                {#if data.icp.subject.nature === "企业"}
+                                    <a class="iq-link" href="https://www.tianyancha.com/search?key={data.icp.subject.name}" target="_blank" rel="noopener noreferrer">{data.icp.subject.name}</a>
+                                {:else}
+                                    {data.icp.subject.name}
+                                {/if}
+                            </strong>
+                        </div>
+                        <div class="info-row">
+                            <span>备案号</span>
+                            <strong>{data.icp.subject.license}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>备案日期</span>
+                            <strong>{formatDate(data.icp.subject.updateTime)}</strong>
+                        </div>
+                    </div>
+                {:else}
+                    <p class="empty-copy">{data.icp.msg || "未返回 ICP 备案信息"}</p>
+                {/if}
+            </section>
+        {/if}
+
+        {#if showWhois && data.whois}
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>WHOIS</h2>
+                    <span>注册商与域名状态</span>
+                </div>
+                <div class="row-list">
+                    <div class="info-row">
+                        <span>域名状态</span>
+                        <strong class="chip-list">
+                            {#if (data.whois["Domain Status"] || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.whois["Domain Status"] || []) as item}
+                                <span class="value-chip">{formatDomainStatus(item)}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    <div class="info-row">
+                        <span>DNS 服务器</span>
+                        <strong class="chip-list">
+                            {#if (data.whois["Name Server"] || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.whois["Name Server"] || []) as item}
+                                <span class="value-chip">{item}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    <div class="info-row">
+                        <span>注册日期</span>
+                        <strong>{formatDateTime(data.whois["Created Date"])}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>更新日期</span>
+                        <strong>{formatDateTime(data.whois["Updated Date"])}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>截止日期</span>
+                        <strong>{formatDateTime(data.whois["Expiry Date"])}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>注册商</span>
+                        <strong>{data.whois["Registrar"] || "-"}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>所属机构</span>
+                        <strong>{data.whois["Registrant Organization"] || "-"}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>注册属地</span>
+                        <strong>{data.whois["Registrant Country"] || "-"}</strong>
+                    </div>
+                </div>
+            </section>
+        {/if}
+
+        {#if showDNS && data.dns}
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>DNS 解析</h2>
+                    <span>记录与位置</span>
+                </div>
+                <div class="row-list">
+                    <div class="info-row">
+                        <span>A</span>
+                        <strong class="chip-list">
+                            {#if (data.dns.A || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.dns.A || []) as item}
+                                <span class="value-chip">{item}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    <div class="info-row">
+                        <span>AAAA</span>
+                        <strong class="chip-list">
+                            {#if (data.dns.AAAA || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.dns.AAAA || []) as item}
+                                <span class="value-chip">{item}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    <div class="info-row">
+                        <span>CNAME</span>
+                        <strong class="chip-list">
+                            {#if (data.dns.CNAME || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.dns.CNAME || []) as item}
+                                <span class="value-chip">{item}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    <div class="info-row">
+                        <span>DNS 服务器</span>
+                        <strong class="chip-list">
+                            {#if (data.dns.NS || []).length === 0}
+                                <span class="value-chip">-</span>
+                            {/if}
+                            {#each (data.dns.NS || []) as item}
+                                <span class="value-chip">{item}</span>
+                            {/each}
+                        </strong>
+                    </div>
+                    {#if data.dns.GEO}
+                        <div class="info-row">
+                            <span>地理位置</span>
+                            <strong>{data.dns.GEO.area || "-"}</strong>
+                        </div>
+                        <div class="info-row">
+                            <span>运营商</span>
+                            <strong>{data.dns.GEO.isp || "-"}</strong>
+                        </div>
+                    {/if}
+                </div>
+            </section>
+        {/if}
+
+        {#if showFeedback}
+            <div class="feedback-card">
+                <span>结果需要修正？</span>
+                <a class="iq-link" href="mailto:yuedan.work+feedback@gmail.com?subject=Feedback%20for%20ICP%20Query%20Extension&body=Email%3A%20%3Cyour%20email%20address%2C%20optional%3E%0A*Token%3A%20%3Cyour%20token%20in%20use%3E%0A*Content%3A%20%3Cinput%20your%20suggestions%20or%20feedback%20here%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))">发送反馈</a>
+                <button type="button" on:click={show_option_page}>配置显示项</button>
+            </div>
+        {/if}
+
+        {#if data && data.warn}
+            <Warn warn={data.warn} />
+        {/if}
+    {:else}
+        <div class="loading-state" aria-live="polite">
+            <div class="skeleton-line wide" />
+            <div class="skeleton-line" />
+            <div class="skeleton-card" />
+            <p>正在查询当前网站信息</p>
+        </div>
     {/if}
-{:else}
-    <div class="loading-container">
-        <Loading type="1_17" />
-        <p>正在查询中...</p>
-    </div>
-{/if}
+</section>
 
 <style>
-    table {
-        margin: auto;
-        border-spacing: 0;
-        border-collapse: separate;
+    .result-panel {
+        padding: 12px;
     }
 
-    table tbody tr {
-        border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+    .notice-card,
+    .feedback-card,
+    .state-card,
+    .summary-strip,
+    .result-section {
+        border: 1px solid var(--iq-border);
+        border-radius: var(--iq-radius-sm);
+        background: var(--iq-surface);
     }
 
-    table tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    table td {
-        padding: 8px 4px;
-        vertical-align: top;
-    }
-
-    .head {
-        display: inline-block;
-        width: 4rem;
-        text-align: justify;
-        text-align-last: justify;
-        font-weight: 500;
-        color: rgb(55, 65, 81);
-        font-size: 12px;
-        line-height: 1.4;
-    }
-
-    .text {
-        font-size: 12px;
-        color: rgb(107, 114, 128);
-        line-height: 1.4;
-        word-break: break-all;
-    }
-
-    .text li {
-        list-style: none;
-        margin: 2px 0;
-        padding: 1px 6px;
-        background-color: rgba(243, 244, 246, 0.8);
-        border-radius: 4px;
-        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-        font-size: 11px;
-    }
-
-    .text a {
-        color: rgb(59, 130, 246);
-        transition: color 0.2s ease;
-    }
-
-    .text a:hover {
-        color: rgb(37, 99, 235);
-    }
-
-    .feedback {
-        font-size: 11px;
-        color: rgb(107, 114, 128);
-        padding: 8px;
-        text-align: center;
-        border-top: 1px solid rgba(229, 231, 235, 0.5);
-        margin-top: 8px;
-    }
-
-    .feedback a {
-        color: rgb(59, 130, 246);
-        text-decoration: none;
-        margin: 0 4px;
-        transition: color 0.2s ease;
-    }
-
-    .feedback a:hover {
-        color: rgb(37, 99, 235);
-        text-decoration: underline;
-    }
-
-    .feedback button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: rgb(156, 163, 175);
-        transition: color 0.2s ease;
-        padding: 2px;
-        border-radius: 2px;
-    }
-
-    .feedback button:hover {
-        color: rgb(107, 114, 128);
-        background-color: rgba(243, 244, 246, 0.5);
-    }
-
-    /* 响应式优化 */
-    @media (max-width: 320px) {
-        .head {
-            width: 3.5rem;
-        }
-        
-        .text {
-            font-size: 11px;
-        }
-        
-        .text li {
-            font-size: 10px;
-        }
-    }
-
-    /* 深色模式支持 */
-    @media (prefers-color-scheme: dark) {
-        .head {
-            color: rgb(209, 213, 219);
-        }
-        
-        .text {
-            color: rgb(156, 163, 175);
-        }
-        
-        .text li {
-            background-color: rgba(55, 65, 81, 0.5);
-        }
-        
-        table tbody tr {
-            border-bottom-color: rgba(75, 85, 99, 0.3);
-        }
-        
-        .feedback {
-            color: rgb(156, 163, 175);
-            border-top-color: rgba(75, 85, 99, 0.3);
-        }
-        
-        .feedback button:hover {
-            background-color: rgba(55, 65, 81, 0.5);
-        }
-    }
-
-    /* 加载状态优化 */
-    .loading-container {
+    .notice-card {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        padding: 20px;
-        color: rgb(107, 114, 128);
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: var(--iq-accent-soft);
     }
 
-    .loading-container p {
-        margin-top: 8px;
+    .notice-card p {
+        margin: 0;
+        color: var(--iq-text);
         font-size: 12px;
+        line-height: 1.45;
+        text-align: left;
+    }
+
+    .notice-card button,
+    .feedback-card button {
+        flex: 0 0 auto;
+        border: 0;
+        color: var(--iq-accent-strong);
+        background: transparent;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .summary-strip {
+        display: grid;
+        grid-template-columns: 74px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        padding: 10px 12px;
+        background: var(--iq-surface-subtle);
+    }
+
+    .summary-strip span {
+        color: var(--iq-text-muted);
+        font-size: 12px;
+    }
+
+    .summary-strip strong {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--iq-text);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+        font-weight: 750;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .state-card {
+        margin-bottom: 10px;
+        padding: 14px;
+        text-align: left;
+    }
+
+    .error-state {
+        border-color: rgb(180 35 24 / 0.32);
+        background: var(--iq-error-soft);
+    }
+
+    .state-card strong {
+        display: block;
+        color: var(--iq-error);
+        font-size: 13px;
+        line-height: 1.3;
+    }
+
+    .state-card p {
+        margin: 5px 0 12px;
+        color: var(--iq-text-muted);
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .state-action {
+        min-height: 32px;
+        padding: 0 12px;
+        font-size: 12px;
+    }
+
+    .result-section + .result-section,
+    .result-section + .feedback-card,
+    .state-card + .result-section {
+        margin-top: 10px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--iq-border);
+        background: var(--iq-surface-subtle);
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        color: var(--iq-text);
+        font-size: 13px;
+        font-weight: 780;
+        line-height: 1.2;
+    }
+
+    .section-heading span {
+        color: var(--iq-text-soft);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .row-list {
+        padding: 2px 12px;
+    }
+
+    .info-row {
+        display: grid;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 12px;
+        padding: 9px 0;
+    }
+
+    .info-row + .info-row {
+        border-top: 1px solid rgb(148 163 184 / 0.18);
+    }
+
+    .info-row > span {
+        color: var(--iq-text-muted);
+        font-size: 12px;
+        line-height: 1.45;
+        text-align: left;
+    }
+
+    .info-row > strong {
+        min-width: 0;
+        color: var(--iq-text);
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.45;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    .chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 5px;
+    }
+
+    .value-chip {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 3px 7px;
+        border: 1px solid var(--iq-border);
+        border-radius: 999px;
+        color: var(--iq-text);
+        background: var(--iq-surface-subtle);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .empty-copy {
+        margin: 0;
+        padding: 14px 12px;
+        color: var(--iq-text-muted);
+        font-size: 12px;
+        line-height: 1.5;
+        text-align: left;
+    }
+
+    .feedback-card {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 10px 12px;
+        color: var(--iq-text-muted);
+        font-size: 12px;
+        line-height: 1.4;
+    }
+
+    .feedback-card span {
+        margin-right: auto;
+    }
+
+    .loading-state {
+        padding: 18px 12px 20px;
+    }
+
+    .loading-state p {
+        margin: 14px 0 0;
+        color: var(--iq-text-muted);
+        font-size: 12px;
+        text-align: center;
+    }
+
+    .skeleton-line,
+    .skeleton-card {
+        overflow: hidden;
+        position: relative;
+        border-radius: 999px;
+        background: var(--iq-surface-muted);
+    }
+
+    .skeleton-line {
+        width: 56%;
+        height: 12px;
+        margin: 0 auto 9px;
+    }
+
+    .skeleton-line.wide {
+        width: 78%;
+    }
+
+    .skeleton-card {
+        height: 118px;
+        margin-top: 14px;
+        border-radius: var(--iq-radius-sm);
+    }
+
+    .skeleton-line::after,
+    .skeleton-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        transform: translateX(-100%);
+        background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.52), transparent);
+        animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .skeleton-line::after,
+        .skeleton-card::after {
+            animation: none;
+        }
+    }
+
+    @media (max-width: 340px) {
+        .result-panel {
+            padding: 10px;
+        }
+
+        .info-row {
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: 8px;
+        }
+
+        .section-heading span {
+            display: none;
+        }
     }
 </style>

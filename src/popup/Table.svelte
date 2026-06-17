@@ -205,20 +205,20 @@
 
 <section class="result-panel">
     {#if showNotice}
-        <div class="notice-line">
+        <div class="notice-card">
             <p>默认显示当前网站 ICP 信息，可在设置中关闭。</p>
             <button type="button" on:click={close_notice}>知道了</button>
         </div>
     {/if}
 
     {#if data}
-        <div class="domain-row">
+        <div class="summary-strip">
             <span>当前域名</span>
             <strong>{currentDomain || "未检测到域名"}</strong>
         </div>
 
         {#if data.msg}
-            <div class="state-panel error-state">
+            <div class="state-card error-state">
                 <strong>查询未完成</strong>
                 <p>{data.msg}</p>
                 <button type="button" class="iq-button iq-button-secondary state-action" on:click={show_option_page}>检查设置</button>
@@ -226,17 +226,20 @@
         {/if}
 
         {#if showICP && data.icp}
-            <section class="detail-section">
-                <div class="section-divider"><span>ICP</span></div>
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>ICP 备案</h2>
+                    <span>主体与备案号</span>
+                </div>
                 {#if data.icp.subject && data.icp.website}
-                    <div class="detail-list">
-                        <div class="detail-row">
-                            <span class="row-label">备案类型</span>
-                            <strong class="row-value">{data.icp.subject.nature}</strong>
+                    <div class="row-list">
+                        <div class="info-row">
+                            <span>备案类型</span>
+                            <strong>{data.icp.subject.nature}</strong>
                         </div>
-                        <div class="detail-row">
-                            <span class="row-label">主办方</span>
-                            <strong class="row-value accent-value">
+                        <div class="info-row">
+                            <span>主办方</span>
+                            <strong>
                                 {#if data.icp.subject.nature === "企业"}
                                     <a class="iq-link" href="https://www.tianyancha.com/search?key={data.icp.subject.name}" target="_blank" rel="noopener noreferrer">{data.icp.subject.name}</a>
                                 {:else}
@@ -244,13 +247,13 @@
                                 {/if}
                             </strong>
                         </div>
-                        <div class="detail-row">
-                            <span class="row-label">备案号</span>
-                            <strong class="row-value">{data.icp.subject.license}</strong>
+                        <div class="info-row">
+                            <span>备案号</span>
+                            <strong>{data.icp.subject.license}</strong>
                         </div>
-                        <div class="detail-row">
-                            <span class="row-label">备案日期</span>
-                            <strong class="row-value">{formatDate(data.icp.subject.updateTime)}</strong>
+                        <div class="info-row">
+                            <span>备案日期</span>
+                            <strong>{formatDate(data.icp.subject.updateTime)}</strong>
                         </div>
                     </div>
                 {:else}
@@ -260,115 +263,121 @@
         {/if}
 
         {#if showWhois && data.whois}
-            <section class="detail-section">
-                <div class="section-divider"><span>WHOIS</span></div>
-                <div class="detail-list">
-                    <div class="detail-row list-row">
-                        <span class="row-label">域名状态</span>
-                        <div class="row-values">
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>WHOIS</h2>
+                    <span>注册商与域名状态</span>
+                </div>
+                <div class="row-list">
+                    <div class="info-row">
+                        <span>域名状态</span>
+                        <strong class="chip-list">
                             {#if (data.whois["Domain Status"] || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.whois["Domain Status"] || []) as item}
-                                <span class="list-value">{formatDomainStatus(item)}</span>
+                                <span class="value-chip">{formatDomainStatus(item)}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
-                    <div class="detail-row list-row">
-                        <span class="row-label multiline-label">DNS 服务器</span>
-                        <div class="row-values mono-values">
+                    <div class="info-row">
+                        <span>DNS 服务器</span>
+                        <strong class="chip-list">
                             {#if (data.whois["Name Server"] || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.whois["Name Server"] || []) as item}
-                                <span class="list-value">{item}</span>
+                                <span class="value-chip">{item}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">注册日期</span>
-                        <strong class="row-value">{formatDateTime(data.whois["Created Date"])}</strong>
+                    <div class="info-row">
+                        <span>注册日期</span>
+                        <strong>{formatDateTime(data.whois["Created Date"])}</strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">更新日期</span>
-                        <strong class="row-value">{formatDateTime(data.whois["Updated Date"])}</strong>
+                    <div class="info-row">
+                        <span>更新日期</span>
+                        <strong>{formatDateTime(data.whois["Updated Date"])}</strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">截止日期</span>
-                        <strong class="row-value">{formatDateTime(data.whois["Expiry Date"])}</strong>
+                    <div class="info-row">
+                        <span>截止日期</span>
+                        <strong>{formatDateTime(data.whois["Expiry Date"])}</strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">注册商</span>
-                        <strong class="row-value">{data.whois["Registrar"] || "-"}</strong>
+                    <div class="info-row">
+                        <span>注册商</span>
+                        <strong>{data.whois["Registrar"] || "-"}</strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">所属机构</span>
-                        <strong class="row-value">{data.whois["Registrant Organization"] || "-"}</strong>
+                    <div class="info-row">
+                        <span>所属机构</span>
+                        <strong>{data.whois["Registrant Organization"] || "-"}</strong>
                     </div>
-                    <div class="detail-row">
-                        <span class="row-label">注册属地</span>
-                        <strong class="row-value">{data.whois["Registrant Country"] || "-"}</strong>
+                    <div class="info-row">
+                        <span>注册属地</span>
+                        <strong>{data.whois["Registrant Country"] || "-"}</strong>
                     </div>
                 </div>
             </section>
         {/if}
 
         {#if showDNS && data.dns}
-            <section class="detail-section">
-                <div class="section-divider"><span>DNS</span></div>
-                <div class="detail-list">
-                    <div class="detail-row list-row">
-                        <span class="row-label">A</span>
-                        <div class="row-values mono-values">
+            <section class="result-section">
+                <div class="section-heading">
+                    <h2>DNS 解析</h2>
+                    <span>记录与位置</span>
+                </div>
+                <div class="row-list">
+                    <div class="info-row">
+                        <span>A</span>
+                        <strong class="chip-list">
                             {#if (data.dns.A || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.dns.A || []) as item}
-                                <span class="list-value">{item}</span>
+                                <span class="value-chip">{item}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
-                    <div class="detail-row list-row">
-                        <span class="row-label">AAAA</span>
-                        <div class="row-values mono-values">
+                    <div class="info-row">
+                        <span>AAAA</span>
+                        <strong class="chip-list">
                             {#if (data.dns.AAAA || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.dns.AAAA || []) as item}
-                                <span class="list-value">{item}</span>
+                                <span class="value-chip">{item}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
-                    <div class="detail-row list-row">
-                        <span class="row-label">CNAME</span>
-                        <div class="row-values mono-values">
+                    <div class="info-row">
+                        <span>CNAME</span>
+                        <strong class="chip-list">
                             {#if (data.dns.CNAME || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.dns.CNAME || []) as item}
-                                <span class="list-value">{item}</span>
+                                <span class="value-chip">{item}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
-                    <div class="detail-row list-row">
-                        <span class="row-label multiline-label">DNS 服务器</span>
-                        <div class="row-values mono-values">
+                    <div class="info-row">
+                        <span>DNS 服务器</span>
+                        <strong class="chip-list">
                             {#if (data.dns.NS || []).length === 0}
-                                <strong class="row-value empty-value">-</strong>
+                                <span class="value-chip">-</span>
                             {/if}
                             {#each (data.dns.NS || []) as item}
-                                <span class="list-value">{item}</span>
+                                <span class="value-chip">{item}</span>
                             {/each}
-                        </div>
+                        </strong>
                     </div>
                     {#if data.dns.GEO}
-                        <div class="detail-row">
-                            <span class="row-label">地理位置</span>
-                            <strong class="row-value">{data.dns.GEO.area || "-"}</strong>
+                        <div class="info-row">
+                            <span>地理位置</span>
+                            <strong>{data.dns.GEO.area || "-"}</strong>
                         </div>
-                        <div class="detail-row">
-                            <span class="row-label">运营商</span>
-                            <strong class="row-value">{data.dns.GEO.isp || "-"}</strong>
+                        <div class="info-row">
+                            <span>运营商</span>
+                            <strong>{data.dns.GEO.isp || "-"}</strong>
                         </div>
                     {/if}
                 </div>
@@ -376,7 +385,7 @@
         {/if}
 
         {#if showFeedback}
-            <div class="feedback-line">
+            <div class="feedback-card">
                 <span>结果需要修正？</span>
                 <a class="iq-link" href="mailto:yuedan.work+feedback@gmail.com?subject=Feedback%20for%20ICP%20Query%20Extension&body=Email%3A%20%3Cyour%20email%20address%2C%20optional%3E%0A*Token%3A%20%3Cyour%20token%20in%20use%3E%0A*Content%3A%20%3Cinput%20your%20suggestions%20or%20feedback%20here%3E%0A%0A%23%20In%20addition%2C%20you%20can%20also%20write%20something%20else%20to%20the%20developer%20(of%20course%20this%20is%20optional))">发送反馈</a>
                 <button type="button" on:click={show_option_page}>配置显示项</button>
@@ -390,7 +399,7 @@
         <div class="loading-state" aria-live="polite">
             <div class="skeleton-line wide" />
             <div class="skeleton-line" />
-            <div class="skeleton-block" />
+            <div class="skeleton-card" />
             <p>正在查询当前网站信息</p>
         </div>
     {/if}
@@ -398,81 +407,94 @@
 
 <style>
     .result-panel {
-        padding: 2px 18px 14px;
+        padding: 12px;
     }
 
-    .notice-line {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
+    .notice-card,
+    .feedback-card,
+    .state-card,
+    .summary-strip,
+    .result-section {
+        border: 1px solid var(--iq-border);
+        border-radius: var(--iq-radius-sm);
+        background: var(--iq-surface);
+    }
+
+    .notice-card {
+        display: flex;
         align-items: center;
+        justify-content: space-between;
         gap: 10px;
-        margin: 2px 0 12px;
-        padding: 8px 0 10px;
-        border-bottom: 1px solid var(--iq-border);
+        margin-bottom: 10px;
+        padding: 10px;
+        background: var(--iq-accent-soft);
     }
 
-    .notice-line p {
+    .notice-card p {
         margin: 0;
-        color: var(--iq-text-muted);
-        font-size: 11.5px;
+        color: var(--iq-text);
+        font-size: 12px;
         line-height: 1.45;
         text-align: left;
     }
 
-    .notice-line button,
-    .feedback-line button {
+    .notice-card button,
+    .feedback-card button {
+        flex: 0 0 auto;
         border: 0;
         color: var(--iq-accent-strong);
         background: transparent;
-        font-size: 11.5px;
+        font-size: 12px;
         font-weight: 700;
         cursor: pointer;
     }
 
-    .domain-row {
+    .summary-strip {
         display: grid;
-        grid-template-columns: 72px minmax(0, 1fr);
-        align-items: baseline;
-        gap: 16px;
-        padding: 6px 0 8px;
-        border-bottom: 1px solid var(--iq-border);
+        grid-template-columns: 74px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+        padding: 10px 12px;
+        background: var(--iq-surface-subtle);
     }
 
-    .domain-row span {
-        color: var(--iq-text-soft);
-        font-size: 11.5px;
-        line-height: 1.4;
-        text-align: left;
+    .summary-strip span {
+        color: var(--iq-text-muted);
+        font-size: 12px;
     }
 
-    .domain-row strong {
+    .summary-strip strong {
         min-width: 0;
         overflow: hidden;
         color: var(--iq-text);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
         font-size: 12px;
         font-weight: 750;
-        line-height: 1.35;
         text-align: right;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .state-panel {
-        margin-top: 12px;
-        padding: 12px 0 14px;
-        border-bottom: 1px solid var(--iq-border);
+    .state-card {
+        margin-bottom: 10px;
+        padding: 14px;
         text-align: left;
     }
 
-    .error-state strong {
+    .error-state {
+        border-color: rgb(180 35 24 / 0.32);
+        background: var(--iq-error-soft);
+    }
+
+    .state-card strong {
         display: block;
         color: var(--iq-error);
         font-size: 13px;
         line-height: 1.3;
     }
 
-    .state-panel p {
+    .state-card p {
         margin: 5px 0 12px;
         color: var(--iq-text-muted);
         font-size: 12px;
@@ -480,152 +502,122 @@
     }
 
     .state-action {
-        min-height: 30px;
+        min-height: 32px;
         padding: 0 12px;
         font-size: 12px;
     }
 
-    .detail-section {
-        margin-top: 16px;
+    .result-section + .result-section,
+    .result-section + .feedback-card,
+    .state-card + .result-section {
+        margin-top: 10px;
     }
 
-    .section-divider {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-        align-items: center;
-        gap: 12px;
-        margin: 0 0 12px;
-        color: var(--iq-text-soft);
-        font-size: 12.5px;
-        font-weight: 750;
-        line-height: 1;
-        text-align: center;
+    .section-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--iq-border);
+        background: var(--iq-surface-subtle);
     }
 
-    .section-divider::before,
-    .section-divider::after {
-        content: "";
-        height: 1px;
-        background: var(--iq-border);
-    }
-
-    .section-divider span {
-        min-width: 42px;
-    }
-
-    .detail-list {
-        display: grid;
-        gap: 0;
-    }
-
-    .detail-row {
-        display: grid;
-        grid-template-columns: 94px minmax(0, 1fr);
-        gap: 18px;
-        align-items: start;
-        padding: 5px 0;
-    }
-
-    .row-label {
+    .section-heading h2 {
+        margin: 0;
         color: var(--iq-text);
         font-size: 13px;
-        font-weight: 760;
-        line-height: 1.45;
-        text-align: left;
+        font-weight: 780;
+        line-height: 1.2;
+    }
+
+    .section-heading span {
+        color: var(--iq-text-soft);
+        font-size: 11px;
         white-space: nowrap;
     }
 
-    .multiline-label {
-        white-space: normal;
+    .row-list {
+        padding: 2px 12px;
     }
 
-    .row-value {
-        min-width: 0;
-        color: var(--iq-text-muted);
-        font-size: 13px;
-        font-weight: 520;
-        line-height: 1.45;
-        text-align: right;
-        overflow-wrap: anywhere;
-        word-break: break-word;
-    }
-
-    .accent-value {
-        color: var(--iq-accent-strong);
-        font-weight: 680;
-    }
-
-    .row-values {
+    .info-row {
         display: grid;
-        min-width: 0;
-        gap: 3px;
+        grid-template-columns: 72px minmax(0, 1fr);
+        gap: 12px;
+        padding: 9px 0;
     }
 
-    .list-value {
-        display: grid;
-        grid-template-columns: 18px minmax(0, 1fr);
-        align-items: start;
-        min-width: 0;
+    .info-row + .info-row {
+        border-top: 1px solid rgb(148 163 184 / 0.18);
+    }
+
+    .info-row > span {
         color: var(--iq-text-muted);
-        font-size: 13px;
-        font-weight: 520;
+        font-size: 12px;
         line-height: 1.45;
         text-align: left;
-        overflow-wrap: anywhere;
+    }
+
+    .info-row > strong {
+        min-width: 0;
+        color: var(--iq-text);
+        font-size: 12px;
+        font-weight: 650;
+        line-height: 1.45;
+        text-align: right;
         word-break: break-word;
     }
 
-    .list-value::before {
-        content: "";
-        width: 4px;
-        height: 4px;
-        margin-top: 0.58em;
-        border-radius: 50%;
-        background: var(--iq-text-soft);
-        justify-self: center;
-        opacity: 0.82;
+    .chip-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 5px;
     }
 
-    .mono-values .list-value,
-    .domain-row strong {
+    .value-chip {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 3px 7px;
+        border: 1px solid var(--iq-border);
+        border-radius: 999px;
+        color: var(--iq-text);
+        background: var(--iq-surface-subtle);
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-size: 12.3px;
-        letter-spacing: 0;
-    }
-
-    .empty-value {
-        display: block;
-        text-align: right;
+        font-size: 11px;
+        font-weight: 650;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
     }
 
     .empty-copy {
         margin: 0;
-        padding: 1px 0 4px;
+        padding: 14px 12px;
         color: var(--iq-text-muted);
         font-size: 12px;
         line-height: 1.5;
-        text-align: center;
+        text-align: left;
     }
 
-    .feedback-line {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto auto;
+    .feedback-card {
+        display: flex;
         align-items: center;
-        gap: 9px;
-        margin-top: 18px;
-        padding-top: 11px;
-        border-top: 1px solid var(--iq-border);
+        gap: 8px;
+        margin-top: 10px;
+        padding: 10px 12px;
         color: var(--iq-text-muted);
-        font-size: 11.5px;
+        font-size: 12px;
         line-height: 1.4;
     }
 
-    .feedback-line span {
-        min-width: 0;
+    .feedback-card span {
+        margin-right: auto;
     }
 
     .loading-state {
-        padding: 18px 0 22px;
+        padding: 18px 12px 20px;
     }
 
     .loading-state p {
@@ -636,7 +628,7 @@
     }
 
     .skeleton-line,
-    .skeleton-block {
+    .skeleton-card {
         overflow: hidden;
         position: relative;
         border-radius: 999px;
@@ -645,7 +637,7 @@
 
     .skeleton-line {
         width: 56%;
-        height: 10px;
+        height: 12px;
         margin: 0 auto 9px;
     }
 
@@ -653,14 +645,14 @@
         width: 78%;
     }
 
-    .skeleton-block {
-        height: 112px;
+    .skeleton-card {
+        height: 118px;
         margin-top: 14px;
-        border-radius: 8px;
+        border-radius: var(--iq-radius-sm);
     }
 
     .skeleton-line::after,
-    .skeleton-block::after {
+    .skeleton-card::after {
         content: "";
         position: absolute;
         inset: 0;
@@ -677,25 +669,23 @@
 
     @media (prefers-reduced-motion: reduce) {
         .skeleton-line::after,
-        .skeleton-block::after {
+        .skeleton-card::after {
             animation: none;
         }
     }
 
     @media (max-width: 340px) {
         .result-panel {
-            padding: 2px 14px 12px;
+            padding: 10px;
         }
 
-        .detail-row {
-            grid-template-columns: 78px minmax(0, 1fr);
-            gap: 12px;
+        .info-row {
+            grid-template-columns: 64px minmax(0, 1fr);
+            gap: 8px;
         }
 
-        .row-label,
-        .row-value,
-        .list-value {
-            font-size: 12px;
+        .section-heading span {
+            display: none;
         }
     }
 </style>

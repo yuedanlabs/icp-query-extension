@@ -41,3 +41,6 @@ keys.json
 
 # typescript
 *.tsbuildinfo
+
+# self
+api-dev.md

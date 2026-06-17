@@ -39,6 +39,31 @@
         return date.toLocaleDateString()
     }
 
+    function formatDateTime(rawDate?: string) {
+        if (!rawDate) return "-"
+        const date = new Date(rawDate)
+        if (Number.isNaN(date.getTime())) {
+            return rawDate
+        }
+
+        try {
+            const formatted = new Intl.DateTimeFormat("zh-CN", {
+                timeZone: "Asia/Shanghai",
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+            }).format(date)
+
+            return `${formatted.replace(/\//g, "-")} 北京时间`
+        } catch (e) {
+            return rawDate
+        }
+    }
+
     function formatDomainStatus(status: string) {
         return status.replace(/\s+https?:\/\/\S+$/i, "").trim()
     }
@@ -247,15 +272,15 @@
                     </tr>
                     <tr>
                         <td class="head">注册日期</td>
-                        <td class="text">{data.whois["Created Date"] || "-"}</td>
+                        <td class="text">{formatDateTime(data.whois["Created Date"])}</td>
                     </tr>
                     <tr>
                         <td class="head">更新日期</td>
-                        <td class="text">{data.whois["Updated Date"] || "-"}</td>
+                        <td class="text">{formatDateTime(data.whois["Updated Date"])}</td>
                     </tr>
                     <tr>
                         <td class="head">截止日期</td>
-                        <td class="text">{data.whois["Expiry Date"] || "-"}</td>
+                        <td class="text">{formatDateTime(data.whois["Expiry Date"])}</td>
                     </tr>
                     <tr>
                         <td class="head">注册商</td>
